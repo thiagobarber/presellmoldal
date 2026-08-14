@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presell SaaS Builder Pro - Idiomas Dinâmicos</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, sans-serif; }
+        body { display: flex; height: 100vh; background-color: #0b0f19; color: #f8fafc; overflow: hidden; }
+        
+        /* Sidebar de Controles */
+        .sidebar { width: 380px; min-width: 380px; padding: 24px; background-color: #111827; border-right: 1px solid #1f2937; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+        .sidebar h2 { font-size: 20px; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; }
+        .form-group input, .form-group select { padding: 12px; border-radius: 8px; border: 1px solid #374151; background-color: #1f2937; color: #fff; font-size: 14px; outline: none; transition: border 0.2s; }
+        .form-group input[type="color"] { height: 48px; padding: 4px; cursor: pointer; }
+        .form-group input:focus, .form-group select:focus { border-color: #38bdf8; }
+        
+        .btn { padding: 14px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        .btn-primary { background-color: #22c55e; color: #fff; }
+        .btn-primary:hover { background-color: #16a34a; }
+
+        /* Área de Preview e Código */
+        .workspace { flex-grow: 1; display: flex; flex-direction: column; background-color: #030712; }
+        .tabs { display: flex; background-color: #111827; border-bottom: 1px solid #1f2937; }
+        .tab { padding: 14px 24px; cursor: pointer; font-size: 14px; font-weight: 600; color: #9ca3af; border-bottom: 2px solid transparent; }
+        .tab.active { color: #38bdf8; border-bottom-color: #38bdf8; background-color: rgba(56, 189, 248, 0.05); }
+        
+        .view-container { flex-grow: 1; position: relative; }
+        .view-page { position: absolute; top:0; left:0; width:100%; height:100%; display:none; }
+        .view-page.active { display:block; }
+        
+        iframe { width: 100%; height: 100%; border: none; }
+        textarea { width: 100%; height: 100%; background-color: #030712; border: none; color: #38bdf8; padding: 20px; font-family: 'Courier New', monospace; font-size: 13px; resize: none; outline: none; }
+    </style>
+</head>
+<body>
+
+    <!-- PAINEL LATERAL -->
+    <div class="sidebar">
+        <h2>⚡ Presell Builder Pro</h2>
+        
+        <div class="form-group">
+            <label>1. Tipo de Presell (Layout Único)</label>
+            <select id="presellType" onchange="updateGenerator()">
+                <option value="country">🗺️ Validação de País/Região (Nativa do Idioma)</option>
+                <option value="age">🔞 Verificação de Idade (Alerta / Minimalista)</option>
+                <option value="cookies">🍪 Banner de Segurança & Cookies (Barra Flutuante)</option>
+                <option value="gender">👥 Seleção de Gênero (Botões Lado a Lado)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>2. Cor Principal do Modal</label>
+            <input type="color" id="accentColor" value="#22c55e" onchange="updateGenerator()">
+        </div>
+
+        <div class="form-group">
+            <label>3. Idioma / Região Global</label>
+            <select id="presellLang" onchange="updateGenerator()">
+                <option value="en">🇺🇸 Inglês (Estados Unidos / Global)</option>
+                <option value="es">🇪🇸 Espanhol (Espanha / América Latina)</option>
+                <option value="pt">🇧🇷 Português (Brasil / Portugal)</option>
+                <option value="de">🇩🇪 Alemão (Alemanha / Áustria)</option>
+                <option value="fr">🇫🇷 Francês (França / Canadá / Suíça)</option>
+                <option value="it">🇮🇹 Italiano (Itália)</option>
+                <option value="nl">🇳🇱 Holandês (Holanda / Bélgica)</option>
+                <option value="ja">🇯🇵 Japonês (Japão)</option>
+                <option value="ko">🇰🇷 Coreano (Coreia do Sul)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>4. Seu Link de Afiliado</label>
+            <input type="url" id="affLink" value="https://cognifortplus.com/ds/indexts.php?aff=thiagobarber&cam=" oninput="updateGenerator()">
+        </div>
+
+        <div class="form-group">
+            <label>5. URL de Fundo (Site da Oferta)</label>
+            <input type="url" id="bgUrl" value="https://cognifortplus.com/ds/indexts.php?aff=thiagobarber&cam=" oninput="updateGenerator()">
+        </div>
+
+        <button class="btn btn-primary" onclick="copyCode()">📋 Copiar Código HTML</button>
+    </div>
+
+    <!-- ÁREA PRINCIPAL -->
+    <div class="workspace">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('preview')">👁️ Preview em Tempo Real</div>
+            <div class="tab" onclick="switchTab('code')">💻 Código HTML Gerado</div>
+        </div>
+
+        <div class="view-container">
+            <div id="previewView" class="view-page active">
+                <iframe id="previewFrame"></iframe>
+            </div>
+            <div id="codeView" class="view-page">
+                <textarea id="outputCode" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BANCO DE DADOS COMPLETO COM PAÍS CORRESPONDENTE A CADA IDIOMA
+        const DATA = {
+            country: {
+                en: { badge: "Region Verification", title: "Select Your Location", sub: "To ensure stock availability and fast local shipping, please confirm your region.", optMain: "🇺🇸 North America (United States)", optMainBadge: "In Stock", optSec: "🌐 Other Continents / International", cta: "Continue to Official Site »", footer: "✓ Official Supply Chain • Fast Shipping" },
+                es: { badge: "Verificación de Región", title: "Seleccione su Ubicación", sub: "Para garantizar la disponibilidad de stock y el envío rápido local, confirme su región.", optMain: "🇪🇸 España / América Latina", optMainBadge: "En Stock", optSec: "🌐 Otros Continentes / Internacional", cta: "Continuar al Sitio Oficial »", footer: "✓ Cadena de Suministro Oficial • Envío Rápido" },
+                pt: { badge: "Verificação de Região", title: "Selecione sua Localização", sub: "Para garantir disponibilidade de estoque e envio rápido, confirme sua região atual.", optMain: "🇧🇷 Brasil / América do Sul", optMainBadge: "Disponível", optSec: "🌐 Outros Continentes / Internacional", cta: "Continuar para o Site Oficial »", footer: "✓ Distribuição Oficial • Envio Rápido" },
+                de: { badge: "Regionen-Überprüfung", title: "Wählen Sie Ihren Standort", sub: "Um die Verfügbarkeit und den schnellen Versand zu gewährleisten, bestätigen Sie Ihre Region.", optMain: "🇩🇪 Deutschland / Europa", optMainBadge: "Auf Lager", optSec: "🌐 Andere Kontinente / International", cta: "Weiter zur offiziellen Website »", footer: "✓ Offizielle Lieferkette • Schneller Versand" },
+                fr: { badge: "Vérification de Région", title: "Sélectionnez votre Emplacement", sub: "Pour garantir la disponibilité du stock et une livraison rapide, veuillez confirmer votre région.", optMain: "🇫🇷 France / Europe", optMainBadge: "En Stock", optSec: "🌐 Autres Continents / International", cta: "Continuer vers le Site Officiel »", footer: "✓ Chaîne d'approvisionnement officielle • Livraison rapide" },
+                it: { badge: "Verifica della Regione", title: "Seleziona la tua Posizione", sub: "Per garantire la disponibilità in magazzino e la spedizione veloce, conferma la tua regione.", optMain: "🇮🇹 Italia / Europa", optMainBadge: "Disponibile", optSec: "🌐 Altri Continenti / Internazionale", cta: "Continua al Sito Ufficiale »", footer: "✓ Catena di Fornitura Ufficiale • Spedizione Rapida" },
+                nl: { badge: "Regio Verificatie", title: "Selecteer uw Locatie", sub: "Bevestig uw regio om de beschikbaarheid van de voorraad en snelle verzending te garanderen.", optMain: "🇳🇱 Nederland / Europa", optMainBadge: "Op Voorraad", optSec: "🌐 Andere Continenten / Internationaal", cta: "Ga naar de Officiële Site »", footer: "✓ Officiële Toeleveringsketen • Snelle Verzending" },
+                ja: { badge: "地域確認", title: "居住地域を選択してください", sub: "在庫の確保と迅速な配送のため、お住まいの地域を確認してください。", optMain: "🇯🇵 日本 (Japan)", optMainBadge: "在庫あり", optSec: "🌐 その他の国・地域", cta: "公式サイトへ進む »", footer: "✓ 公式サプライチェーン・迅速発送" },
+                ko: { badge: "지역 확인", title: "거주 지역을 선택하세요", sub: "재고 확보 및 빠른 배송을 위해 현재 거주 지역을 확인해 주세요.", optMain: "🇰🇷 대한민국 (South Korea)", optMainBadge: "재고 있음", optSec: "🌐 기타 대륙 / 국제", cta: "공식 사이트로 이동 »", footer: "✓ 공식 공급망 • 빠른 배송" }
+            },
+            age: {
+                en: { title: "AGE RESTRICTION 18+", sub: "This presentation contains restricted offer details. Please confirm your age.", btnYes: "YES, I AM 18+", btnNo: "NO, UNDER 18", footer: "🔒 Encrypted Access Verification" },
+                es: { title: "RESTRICCIÓN DE EDAD 18+", sub: "Esta presentación contiene ofertas restringidas. Confirme su edad legal.", btnYes: "SÍ, TENGO 18+", btnNo: "MENOR DE 18", footer: "🔒 Acceso Seguro y Privado" },
+                pt: { title: "RESTRIÇÃO DE IDADE 18+", sub: "Esta apresentação contém ofertas exclusivas. Confirme sua idade.", btnYes: "SIM, TENHO 18+", btnNo: "SOU MENOR", footer: "🔒 Acesso Seguro e Privado" },
+                de: { title: "ALTERSBESCHRÄNKUNG 18+", sub: "Diese Präsentation enthält eingeschränkte Angebote. Bitte bestätigen Sie Ihr Alter.", btnYes: "JA, ICH BIN 18+", btnNo: "UNTER 18 JAHRE", footer: "🔒 Verschlüsselte Überprüfung" },
+                fr: { title: "RESTRICTION D'ÂGE 18+", sub: "Cette présentation contient des détails d'offre restreints. Veuillez confirmer votre âge.", btnYes: "OUI, J'AI 18 ANS+", btnNo: "MOINS DE 18 ANS", footer: "🔒 Vérification d'accès cryptée" },
+                it: { title: "RESTRIZIONE DI ETÀ 18+", sub: "Questa presentazione contiene dettagli sull'offerta riservata. Conferma la tua età.", btnYes: "SÌ, HO 18+ ANNI", btnNo: "MENO DI 18 ANNI", footer: "🔒 Verifica di Accesso Crittografata" },
+                nl: { title: "LEEFTIJDSBEPERKING 18+", sub: "Deze presentatie bevat beperkte aanbiedingen. Bevestig uw leeftijd.", btnYes: "JA, IK BEN 18+", btnNo: "JONGER DAN 18", footer: "🔒 Beveiligde Toegangsverificatie" },
+                ja: { title: "年齢制限 18歳以上", sub: "このプレゼンテーションには限定オファーが含まれています。年齢を確認してください。", btnYes: "はい、18歳以上です", btnNo: "18歳未満です", footer: "🔒 暗号化されたアクセス検証" },
+                ko: { title: "연령 제한 18세 이상", sub: "이 발표에는 제한된 혜택 정보가 포함되어 있습니다. 연령을 확인해 주세요.", btnYes: "예, 18세 이상입니다", btnNo: "18세 미만입니다", footer: "🔒 암호화된 액세스 확인" }
+            },
+            cookies: {
+                en: { title: "Security & Terms Verification", sub: "Accept our visitor protocol to access official discounts and guaranteed stock reservation.", btnAccept: "ACCEPT TERMS & PROCEED", footer: "🛡️ SSL Secured 256-Bit Connection" },
+                es: { title: "Seguridad y Términos", sub: "Acepte el protocolo para acceder a los descuentos oficiales y reserva garantizada.", btnAccept: "ACEPTAR TÉRMINOS Y CONTINUAR", footer: "🛡️ Conexión Segura SSL de 256 Bits" },
+                pt: { title: "Segurança e Termos", sub: "Aceite o protocolo para acessar os descontos oficiais e garantir a reserva de estoque.", btnAccept: "ACEITAR TERMOS E CONTINUAR", footer: "🛡️ Conexão Segura SSL 256-Bit" },
+                de: { title: "Sicherheit & Bedingungen", sub: "Akzeptieren Sie das Besucherprotokoll, um auf offizielle Rabatte zuzugreifen.", btnAccept: "BEDINGUNGEN AKZEPTIEREN", footer: "🛡️ SSL-geschützte 256-Bit-Verbindung" },
+                fr: { title: "Sécurité & Conditions", sub: "Acceptez notre protocole pour accéder aux réductions officielles et réserver votre stock.", btnAccept: "ACCEPTER LES CONDITIONS", footer: "🛡️ Connexion sécurisée SSL 256 bits" },
+                it: { title: "Sicurezza e Termini", sub: "Accetta il nostro protocollo per accedere agli sconti ufficiali e riservare il tuo stock.", btnAccept: "ACCETTA I TERMINI E PROCEDI", footer: "🛡️ Connessione Sicura SSL a 256 Bit" },
+                nl: { title: "Beveiliging & Voorwaarden", sub: "Accepteer ons bezoekersprotocol om toegang te krijgen tot officiële kortingen.", btnAccept: "VOORWAARDEN ACCEPTEREN", footer: "🛡️ SSL-beveiligde 256-bits verbinding" },
+                ja: { title: "セキュリティと利用規約", sub: "公式割引と在庫予約にアクセスするには、訪問者プロトコルに同意してください。", btnAccept: "規約に同意して進む", footer: "🛡️ SSL 256ビット暗号化通信" },
+                ko: { title: "보안 및 약관 확인", sub: "공식 할인 및 재고 선점을 위해 방문자 보안 프로토콜에 동의해 주세요.", btnAccept: "약관 동의 및 진행", footer: "🛡️ SSL 256비트 암호화 연결" }
+            },
+            gender: {
+                en: { title: "Select Your Profile", sub: "Choose your gender profile to load the custom formulation and stock allocation.", btnMale: "👨 MALE / FOR MEN", btnFemale: "👩 FEMALE / FOR WOMEN", footer: "✨ Custom Formulation Available" },
+                es: { title: "Seleccione su Perfil", sub: "Elija su perfil de género para cargar la formulación personalizada.", btnMale: "👨 HOMBRE / PARA HOMBRES", btnFemale: "👩 MUJER / PARA MUJERES", footer: "✨ Formulación Personalizada Disponible" },
+                pt: { title: "Selecione seu Perfil", sub: "Escolha seu perfil para carregar a formulação personalizada e estoque.", btnMale: "👨 MASCULINO / HOMENS", btnFemale: "👩 FEMININO / MULHERES", footer: "✨ Fórmula Sob Medida Disponível" },
+                de: { title: "Wählen Sie Ihr Profil", sub: "Wählen Sie Ihr Geschlecht, um die maßgeschneiderte Formel zu laden.", btnMale: "👨 MÄNNLICH / FÜR MÄNNER", btnFemale: "👩 WEIBLICH / FÜR FRAUEN", footer: "✨ Maßgeschneiderte Formel Verfügbar" },
+                fr: { title: "Sélectionnez votre Profil", sub: "Choisissez votre profil pour charger la formulation personnalisée.", btnMale: "👨 HOMME / POUR HOMMES", btnFemale: "👩 FEMME / POUR FEMMES", footer: "✨ Formule sur mesure disponible" },
+                it: { title: "Seleziona il tuo Profilo", sub: "Scegli il tuo profilo per caricare la formulazione personalizzata.", btnMale: "👨 MASCHIO / PER UOMINI", btnFemale: "👩 FEMMINA / PER DONNE", footer: "✨ Formulazione Personalizzata Disponibile" },
+                nl: { title: "Selecteer uw Profiel", sub: "Kies uw profiel om de aangepaste formule te laden.", btnMale: "👨 MANNELIJK / VOOR MANNEN", btnFemale: "👩 VROUWELIJK / VOOR VROUWEN", footer: "✨ Aangepaste Formule Beschikbaar" },
+                ja: { title: "プロフィールを選択", sub: "カスタムフォーミュラと在庫を読み込むため、プロファイルを選択してください。", btnMale: "👨 男性向け (MALE)", btnFemale: "👩 女性向け (FEMALE)", footer: "✨ カスタムフォーミュラ適用中" },
+                ko: { title: "프로필을 선택하세요", sub: "맞춤형 포뮬러 및 재고 할당을 위해 프로필을 선택해 주세요.", btnMale: "👨 남성용 (MALE)", btnFemale: "👩 여성용 (FEMALE)", footer: "✨ 맞춤형 포뮬러 적용 완료" }
+            }
+        };
+
+        function generateFullHTML() {
+            const type = document.getElementById('presellType').value;
+            const lang = document.getElementById('presellLang').value;
+            const affLink = document.getElementById('affLink').value;
+            const bgUrl = document.getElementById('bgUrl').value;
+            const accent = document.getElementById('accentColor').value;
+
+            let layoutContent = "";
+
+            if (type === 'country') {
+                const t = DATA.country[lang];
+                layoutContent = `
+                <div class="modal-card layout-country">
+                    <a href="${affLink}" class="close-btn">&times;</a>
+                    <span class="badge">${t.badge}</span>
+                    <h1 class="modal-title">${t.title}</h1>
+                    <p class="modal-subtitle">${t.sub}</p>
+                    <a href="${affLink}" class="country-option main-opt">
+                        <span>${t.optMain}</span>
+                        <span class="status-tag">${t.optMainBadge}</span>
+                    </a>
+                    <a href="${affLink}" class="country-option sec-opt">
+                        <span>${t.optSec}</span>
+                    </a>
+                    <a href="${affLink}" class="cta-btn">${t.cta}</a>
+                    <div class="footer-text">${t.footer}</div>
+                </div>`;
+            } 
+            else if (type === 'age') {
+                const t = DATA.age[lang];
+                layoutContent = `
+                <div class="modal-card layout-age">
+                    <a href="${affLink}" class="close-btn">&times;</a>
+                    <div class="warning-icon">🔞</div>
+                    <h1 class="modal-title">${t.title}</h1>
+                    <p class="modal-subtitle">${t.sub}</p>
+                    <div class="btn-group">
+                        <a href="${affLink}" class="cta-btn btn-yes">${t.btnYes}</a>
+                        <a href="${affLink}" class="btn-no">${t.btnNo}</a>
+                    </div>
+                    <div class="footer-text">${t.footer}</div>
+                </div>`;
+            } 
+            else if (type === 'cookies') {
+                const t = DATA.cookies[lang];
+                layoutContent = `
+                <div class="modal-card layout-cookies">
+                    <a href="${affLink}" class="close-btn">&times;</a>
+                    <div class="cookies-header">
+                        <span class="shield-icon">🛡️</span>
+                        <div>
+                            <h1 class="modal-title">${t.title}</h1>
+                            <p class="modal-subtitle">${t.sub}</p>
+                        </div>
+                    </div>
+                    <a href="${affLink}" class="cta-btn">${t.btnAccept}</a>
+                    <div class="footer-text">${t.footer}</div>
+                </div>`;
+            } 
+            else if (type === 'gender') {
+                const t = DATA.gender[lang];
+                layoutContent = `
+                <div class="modal-card layout-gender">
+                    <a href="${affLink}" class="close-btn">&times;</a>
+                    <h1 class="modal-title">${t.title}</h1>
+                    <p class="modal-subtitle">${t.sub}</p>
+                    <div class="gender-grid">
+                        <a href="${affLink}" class="gender-card">
+                            <div class="gender-btn">${t.btnMale}</div>
+                        </a>
+                        <a href="${affLink}" class="gender-card">
+                            <div class="gender-btn">${t.btnFemale}</div>
+                        </a>
+                    </div>
+                    <div class="footer-text">${t.footer}</div>
+                </div>`;
+            }
+
+            return `<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, sans-serif; }
+        body, html { height: 100%; width: 100%; overflow: hidden; background: #0d1117; color: #fff; }
+        
+        .bg-container { position: absolute; top:0; left:0; width:100%; height:100%; z-index:1; filter: blur(8px) brightness(0.35); transform: scale(1.05); }
+        .bg-iframe { width:100%; height:100%; border:none; pointer-events:none; }
+        .overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(10, 15, 30, 0.75); z-index:2; }
+        .modal-wrapper { position: absolute; top:0; left:0; width:100%; height:100%; z-index:3; display:flex; align-items:center; justify-content:center; padding:20px; }
+        
+        /* CARD BASE */
+        .modal-card { width:100%; max-width:500px; background:#161b22; border:1px solid #30363d; border-radius:16px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.8); position:relative; padding:32px 28px; }
+        .close-btn { position:absolute; top:16px; right:20px; font-size:24px; font-weight:bold; color:#8b949e; text-decoration:none; line-height:1; }
+        .close-btn:hover { color:#fff; }
+        
+        .modal-title { font-size:22px; font-weight:700; color:#fff; line-height:1.3; margin-bottom:8px; }
+        .modal-subtitle { font-size:14px; color:#8b949e; line-height:1.5; margin-bottom:20px; }
+        .footer-text { text-align:center; font-size:12px; color:#8b949e; margin-top:16px; }
+        
+        .cta-btn { display:block; width:100%; background: ${accent}; color:#fff; text-align:center; padding:16px; font-size:15px; font-weight:700; text-decoration:none; border-radius:10px; text-transform:uppercase; box-shadow: 0 4px 14px ${accent}66; transition: filter 0.2s; }
+        .cta-btn:hover { filter: brightness(1.15); }
+
+        /* LAYOUT 1: COUNTRY */
+        .layout-country .badge { display:inline-block; background: ${accent}22; color: ${accent}; border:1px solid ${accent}66; font-size:11px; font-weight:700; text-transform:uppercase; padding:4px 10px; border-radius:20px; margin-bottom:12px; }
+        .layout-country .country-option { background:#21262d; border:1px solid #30363d; border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:#fff; margin-bottom:12px; font-size:14px; font-weight:600; }
+        .layout-country .main-opt { border: 2px solid ${accent}; }
+        .layout-country .status-tag { font-size:11px; background: ${accent}; color:#fff; padding:3px 8px; border-radius:6px; font-weight:700; }
+
+        /* LAYOUT 2: AGE */
+        .layout-age { text-align: center; border-top: 4px solid ${accent}; }
+        .layout-age .warning-icon { font-size: 40px; margin-bottom: 10px; }
+        .layout-age .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .layout-age .btn-no { display:block; width:100%; background:#21262d; color:#8b949e; text-align:center; padding:16px; font-size:13px; font-weight:700; text-decoration:none; border-radius:10px; border:1px solid #30363d; }
+
+        /* LAYOUT 3: COOKIES */
+        .layout-cookies { max-width: 550px; background: #0d1117; border: 1px solid ${accent}88; }
+        .layout-cookies .cookies-header { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+        .layout-cookies .shield-icon { font-size: 32px; background: ${accent}22; padding: 10px; border-radius: 12px; }
+
+        /* LAYOUT 4: GÊNERO */
+        .layout-gender { text-align: center; }
+        .layout-gender .gender-grid { display: flex; gap: 12px; margin-bottom: 12px; }
+        .layout-gender .gender-card { flex: 1; text-decoration: none; }
+        .layout-gender .gender-btn { background: #21262d; border: 2px solid #30363d; padding: 20px 10px; border-radius: 12px; color: #fff; font-size: 14px; font-weight: 700; transition: all 0.2s; }
+        .layout-gender .gender-card:hover .gender-btn { border-color: ${accent}; background: ${accent}11; }
+    </style>
+</head>
+<body>
+    <div class="bg-container"><iframe class="bg-iframe" src="${bgUrl}"></iframe></div>
+    <div class="overlay"></div>
+    <div class="modal-wrapper">
+        ${layoutContent}
+    </div>
+</body>
+</html>`;
+        }
+
+        function updateGenerator() {
+            const html = generateFullHTML();
+            document.getElementById('outputCode').value = html;
+            
+            const iframe = document.getElementById('previewFrame');
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            doc.open();
+            doc.write(html);
+            doc.close();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
+            
+            if (tabName === 'preview') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('previewView').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('codeView').classList.add('active');
+            }
+        }
+
+        function copyCode() {
+            const codeArea = document.getElementById('outputCode');
+            codeArea.select();
+            document.execCommand('copy');
+            alert('✅ Código HTML copiado com sucesso!');
+        }
+
+        window.onload = updateGenerator;
+    </script>
+</body>
+</html>
