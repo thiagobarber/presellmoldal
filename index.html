@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presell SaaS Builder Pro - Idiomas Dinâmicos</title>
+    <title>Presell SaaS Builder Pro - 20 Idiomas Globais</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, sans-serif; }
         body { display: flex; height: 100vh; background-color: #0b0f19; color: #f8fafc; overflow: hidden; }
@@ -57,17 +57,28 @@
         </div>
 
         <div class="form-group">
-            <label>3. Idioma / Região Global</label>
+            <label>3. Idioma / Região Global (20 Opções)</label>
             <select id="presellLang" onchange="updateGenerator()">
-                <option value="en">🇺🇸 Inglês (Estados Unidos / Global)</option>
-                <option value="es">🇪🇸 Espanhol (Espanha / América Latina)</option>
+                <option value="en">🇺🇸 Inglês (EUA / Global)</option>
+                <option value="es">🇪🇸 Espanhol (Espanha / LatAm)</option>
                 <option value="pt">🇧🇷 Português (Brasil / Portugal)</option>
                 <option value="de">🇩🇪 Alemão (Alemanha / Áustria)</option>
-                <option value="fr">🇫🇷 Francês (França / Canadá / Suíça)</option>
+                <option value="fr">🇫🇷 Francês (França / Canadá)</option>
                 <option value="it">🇮🇹 Italiano (Itália)</option>
                 <option value="nl">🇳🇱 Holandês (Holanda / Bélgica)</option>
+                <option value="pl">🇵🇱 Polonês (Polônia)</option>
+                <option value="sv">🇸🇪 Sueco (Suécia)</option>
+                <option value="no">🇳🇴 Norueguês (Noruega)</option>
+                <option value="da">🇩🇰 Dinamarquês (Dinamarca)</option>
+                <option value="fi">🇫🇮 Finlandês (Finlândia)</option>
+                <option value="ru">🇷🇺 Russo (Rússia / Leste Europeu)</option>
+                <option value="tr">🇹🇷 Turco (Turquia)</option>
+                <option value="ar">🇸🇦 Árabe (Oriente Médio)</option>
                 <option value="ja">🇯🇵 Japonês (Japão)</option>
                 <option value="ko">🇰🇷 Coreano (Coreia do Sul)</option>
+                <option value="zh">🇨🇳 Chinês Simplificado (China)</option>
+                <option value="hi">🇮🇳 Hindi (Índia)</option>
+                <option value="id">🇮🇩 Indonésio (Indonésia)</option>
             </select>
         </div>
 
@@ -102,7 +113,7 @@
     </div>
 
     <script>
-        // BANCO DE DADOS COMPLETO COM PAÍS CORRESPONDENTE A CADA IDIOMA
+        // BANCO DE DADOS COMPLETO - 20 IDIOMAS
         const DATA = {
             country: {
                 en: { badge: "Region Verification", title: "Select Your Location", sub: "To ensure stock availability and fast local shipping, please confirm your region.", optMain: "🇺🇸 North America (United States)", optMainBadge: "In Stock", optSec: "🌐 Other Continents / International", cta: "Continue to Official Site »", footer: "✓ Official Supply Chain • Fast Shipping" },
@@ -112,8 +123,19 @@
                 fr: { badge: "Vérification de Région", title: "Sélectionnez votre Emplacement", sub: "Pour garantir la disponibilité du stock et une livraison rapide, veuillez confirmer votre région.", optMain: "🇫🇷 France / Europe", optMainBadge: "En Stock", optSec: "🌐 Autres Continents / International", cta: "Continuer vers le Site Officiel »", footer: "✓ Chaîne d'approvisionnement officielle • Livraison rapide" },
                 it: { badge: "Verifica della Regione", title: "Seleziona la tua Posizione", sub: "Per garantire la disponibilità in magazzino e la spedizione veloce, conferma la tua regione.", optMain: "🇮🇹 Italia / Europa", optMainBadge: "Disponibile", optSec: "🌐 Altri Continenti / Internazionale", cta: "Continua al Sito Ufficiale »", footer: "✓ Catena di Fornitura Ufficiale • Spedizione Rapida" },
                 nl: { badge: "Regio Verificatie", title: "Selecteer uw Locatie", sub: "Bevestig uw regio om de beschikbaarheid van de voorraad en snelle verzending te garanderen.", optMain: "🇳🇱 Nederland / Europa", optMainBadge: "Op Voorraad", optSec: "🌐 Andere Continenten / Internationaal", cta: "Ga naar de Officiële Site »", footer: "✓ Officiële Toeleveringsketen • Snelle Verzending" },
+                pl: { badge: "Weryfikacja Regionu", title: "Wybierz Swoją Lokalizację", sub: "Aby zapewnić dostępność towaru i szybką dostawę, potwierdź swój region.", optMain: "🇵🇱 Polska / Europa", optMainBadge: "W Magazynie", optSec: "🌐 Inne Kontynenty / Międzynarodowe", cta: "Przejdź do Oficjalnej Strony »", footer: "✓ Oficjalny Łańcuch Dostaw • Szybka Wysyłka" },
+                sv: { badge: "Regionverifiering", title: "Välj Din Plats", sub: "Bekräfta din region för att säkerställa lagertillgång och snabb leverans.", optMain: "🇸🇪 Sverige / Europa", optMainBadge: "I Lager", optSec: "🌐 Andra Kontinenter / Internationellt", cta: "Fortsätt till Officiell Sida »", footer: "✓ Officiell Försörjningskedja • Snabb Leverans" },
+                no: { badge: "Regionverifisering", title: "Velg Din Plassering", sub: "For å sikre lagertilgjengelighet og rask frakt, vennligst bekreft din region.", optMain: "🇳🇴 Norge / Europa", optMainBadge: "På Lager", optSec: "🌐 Andre Kontinenter / Internasjonal", cta: "Fortsett til Offisiell Side »", footer: "✓ Offisiell Lieferand • Rask Levering" },
+                da: { badge: "Regionbekræftelse", title: "Vælg Din Placering", sub: "For at sikre lageravailability og hurtig forsendelse, bedes du bekræfte din region.", optMain: "🇩🇰 Danmark / Europa", optMainBadge: "På Lager", optSec: "🌐 Andre Kontinenter / International", cta: "Fortsæt til Officiel Side »", footer: "✓ Officiel Forsyningskæde • Hurtig Levering" },
+                fi: { badge: "Alueen Vahvistus", title: "Valitse Sijaintisi", sub: "Varmistaaksesi varaston saatavuuden ja nopean toimituksen, vahvista alueesi.", optMain: "🇫🇮 Suomi / Eurooppa", optMainBadge: "Varastossa", optSec: "🌐 Muut Maanosat / Kansainvälinen", cta: "Jatka Viralliselle Sivustolle »", footer: "✓ Virallinen Toimitusketju • Nopeasti Perillä" },
+                ru: { badge: "Проверка региона", title: "Выберите ваше местоположение", sub: "Чтобы гарантировать наличие товара и быструю доставку, подтвердите ваш регион.", optMain: "🇷🇺 Россия / СНГ", optMainBadge: "В наличии", optSec: "🌐 Другие континенты / Международный", cta: "Перейти на официальный сайт »", footer: "✓ Официальная цепочка поставок • Быстрая доставка" },
+                tr: { badge: "Bölge Doğrulaması", title: "Konumunuzu Seçin", sub: "Stok durumunu ve hızlı teslimatı garantilemek için lütfen bölgenizi doğrulayın.", optMain: "🇹🇷 Türkiye / Avrupa", optMainBadge: "Stokta Var", optSec: "🌐 Diğer Kıtalarda / Uluslararası", cta: "Resmi Siteye Devam Et »", footer: "✓ Resmi Tedarik Zinciri • Hızlı Teslimat" },
+                ar: { badge: "التحقق من المنطقة", title: "حدد موقعك الحالي", sub: "لضمان توفر المخزون والشحن السريع، يرجى تأكيد منطقتك.", optMain: "🇸🇦 الشرق الأوسط والشمال الأفريقي", optMainBadge: "متوفر بالمخزون", optSec: "🌐 قارات أخرى / دولي", cta: "المتابعة إلى الموقع الرسمي »", footer: "✓ سلسلة التوريد الرسمية • شحن سريع" },
                 ja: { badge: "地域確認", title: "居住地域を選択してください", sub: "在庫の確保と迅速な配送のため、お住まいの地域を確認してください。", optMain: "🇯🇵 日本 (Japan)", optMainBadge: "在庫あり", optSec: "🌐 その他の国・地域", cta: "公式サイトへ進む »", footer: "✓ 公式サプライチェーン・迅速発送" },
-                ko: { badge: "지역 확인", title: "거주 지역을 선택하세요", sub: "재고 확보 및 빠른 배송을 위해 현재 거주 지역을 확인해 주세요.", optMain: "🇰🇷 대한민국 (South Korea)", optMainBadge: "재고 있음", optSec: "🌐 기타 대륙 / 국제", cta: "공식 사이트로 이동 »", footer: "✓ 공식 공급망 • 빠른 배송" }
+                ko: { badge: "지역 확인", title: "거주 지역을 선택하세요", sub: "재고 확보 및 빠른 배송을 위해 현재 거주 지역을 확인해 주세요.", optMain: "🇰🇷 대한민국 (South Korea)", optMainBadge: "재고 있음", optSec: "🌐 기타 대륙 / 국제", cta: "공식 사이트로 이동 »", footer: "✓ 공식 공급망 • 빠른 배송" },
+                zh: { badge: "区域验证", title: "请选择您的地理位置", sub: "为确保库存充足及快速发货，请确认您所在的区域。", optMain: "🇨🇳 中国 / 亚洲", optMainBadge: "现货供应", optSec: "🌐 其他大洲 / 国际", cta: "前往官方网站 »", footer: "✓ 官方正品保障 • 快速送达" },
+                hi: { badge: "क्षेत्र सत्यापन", title: "अपना स्थान चुनें", sub: "स्टॉक की उपलब्धता और त्वरित डिलीवरी सुनिश्चित करने के लिए अपना क्षेत्र चुनें।", optMain: "🇮🇳 भारत (India)", optMainBadge: "स्टॉक में उपलब्ध", optSec: "🌐 अन्य महाद्वीप / अंतर्राष्ट्रीय", cta: "आधिकारिक साइट पर जाएं »", footer: "✓ आधिकारिक आपूर्ति • त्वरित डिलीवरी" },
+                id: { badge: "Verifikasi Wilayah", title: "Pilih Lokasi Anda", sub: "Untuk memastikan ketersediaan stok dan pengiriman cepat, konfirmasikan wilayah Anda.", optMain: "🇮🇩 Indonesia / Asia Tenggara", optMainBadge: "Stok Tersedia", optSec: "🌐 Benua Lain / Internasional", cta: "Lanjutkan ke Situs Resmi »", footer: "✓ Rantai Pasokan Resmi • Pengiriman Cepat" }
             },
             age: {
                 en: { title: "AGE RESTRICTION 18+", sub: "This presentation contains restricted offer details. Please confirm your age.", btnYes: "YES, I AM 18+", btnNo: "NO, UNDER 18", footer: "🔒 Encrypted Access Verification" },
@@ -123,8 +145,19 @@
                 fr: { title: "RESTRICTION D'ÂGE 18+", sub: "Cette présentation contient des détails d'offre restreints. Veuillez confirmer votre âge.", btnYes: "OUI, J'AI 18 ANS+", btnNo: "MOINS DE 18 ANS", footer: "🔒 Vérification d'accès cryptée" },
                 it: { title: "RESTRIZIONE DI ETÀ 18+", sub: "Questa presentazione contiene dettagli sull'offerta riservata. Conferma la tua età.", btnYes: "SÌ, HO 18+ ANNI", btnNo: "MENO DI 18 ANNI", footer: "🔒 Verifica di Accesso Crittografata" },
                 nl: { title: "LEEFTIJDSBEPERKING 18+", sub: "Deze presentatie bevat beperkte aanbiedingen. Bevestig uw leeftijd.", btnYes: "JA, IK BEN 18+", btnNo: "JONGER DAN 18", footer: "🔒 Beveiligde Toegangsverificatie" },
+                pl: { title: "OGRANICZENIE WIEKU 18+", sub: "Ta prezentacja zawiera zastrzeżone oferty. Potwierdź swój wiek.", btnYes: "TAK, MAM 18+ LAT", btnNo: "MAM PONIŻEJ 18 LAT", footer: "🔒 Szyfrowana Weryfikacja Dostępu" },
+                sv: { title: "ÅLDERSGRÄNS 18+", sub: "Denna presentation innehåller begränsade erjudanden. Bekräfta din ålder.", btnYes: "JA, JAG ÄR 18+", btnNo: "NEJ, UNDER 18", footer: "🔒 Krypterad Verifiering" },
+                no: { title: "ALDERSGRENSE 18+", sub: "Denne presentasjonen inneholder begrensede tilbud. Vennligst bekreft din alder.", btnYes: "JA, JEG ER 18+", btnNo: "UNDER 18 ÅR", footer: "🔒 Kryptert Tilgangsverifisering" },
+                da: { title: "ALDERSBEGRÆNSNING 18+", sub: "Denne præsentation indeholder begrænsede tilbud. Bekræft venligst din alder.", btnYes: "JA, JEG ER 18+", btnNo: "UNDER 18 ÅR", footer: "🔒 Krypteret Adgangsverificering" },
+                fi: { title: "IKÄRAJA 18+", sub: "Tämä esitys sisältää rajoitettuja tarjouksia. Vahvista ikäsi.", btnYes: "KYLLÄ, OLEN 18+", btnNo: "ALLE 18-VUOTIAS", footer: "🔒 Krüptottu Pääsyn Vahvistus" },
+                ru: { title: "ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ 18+", sub: "Презентация содержит эксклюзивные предложения. Подтвердите возраст.", btnYes: "ДА, МНЕ ЕСТЬ 18", btnNo: "НЕТ, МЛАДШЕ 18", footer: "🔒 Защищенная проверка доступа" },
+                tr: { title: "YAŞ SINITLAMASI 18+", sub: "Bu sunum özel teklifler içerir. Lütfen yaşınızı doğrulayın.", btnYes: "EVET, 18 YAŞINDAYIM+", btnNo: "18 YAŞINDAN KÜÇÜĞÜM", footer: "🔒 Şifreli Erişim Doğrulaması" },
+                ar: { title: "تقييد العمر +18", sub: "يحتوي هذا العرض على تفاصيل حصريّة. يرجى تأكيد عمرك للبدء.", btnYes: "نعم، عمري 18 أو أكثر", btnNo: "أقل من 18 عاماً", footer: "🔒 تحقق آمن ومشفر" },
                 ja: { title: "年齢制限 18歳以上", sub: "このプレゼンテーションには限定オファーが含まれています。年齢を確認してください。", btnYes: "はい、18歳以上です", btnNo: "18歳未満です", footer: "🔒 暗号化されたアクセス検証" },
-                ko: { title: "연령 제한 18세 이상", sub: "이 발표에는 제한된 혜택 정보가 포함되어 있습니다. 연령을 확인해 주세요.", btnYes: "예, 18세 이상입니다", btnNo: "18세 미만입니다", footer: "🔒 암호화된 액세스 확인" }
+                ko: { title: "연령 제한 18세 이상", sub: "이 발표에는 제한된 혜택 정보가 포함되어 있습니다. 연령을 확인해 주세요.", btnYes: "예, 18세 이상입니다", btnNo: "18세 미만입니다", footer: "🔒 암호화된 액세스 확인" },
+                zh: { title: "年龄限制 18+", sub: "本内容包含受限优惠信息。请确认您的年龄以继续。", btnYes: "是的，我已满18岁", btnNo: "未满18岁", footer: "🔒 加密访问验证" },
+                hi: { title: "आयु सीमा 18+", sub: "इस प्रस्तुति में सीमित ऑफ़र विवरण शामिल हैं। कृपया अपनी आयु की पुष्टि करें।", btnYes: "हाँ, मैं 18+ का हूँ", btnNo: "18 से कम", footer: "🔒 एनक्रिप्टेड पहुंच सत्यापन" },
+                id: { title: "BATASAN USIA 18+", sub: "Presentasi ini berisi penawaran terbatas. Silakan konfirmasikan usia Anda.", btnYes: "YA, SAYA 18+", btnNo: "DI BAWAH 18", footer: "🔒 Verifikasi Akses Terenkripsi" }
             },
             cookies: {
                 en: { title: "Security & Terms Verification", sub: "Accept our visitor protocol to access official discounts and guaranteed stock reservation.", btnAccept: "ACCEPT TERMS & PROCEED", footer: "🛡️ SSL Secured 256-Bit Connection" },
@@ -134,8 +167,19 @@
                 fr: { title: "Sécurité & Conditions", sub: "Acceptez notre protocole pour accéder aux réductions officielles et réserver votre stock.", btnAccept: "ACCEPTER LES CONDITIONS", footer: "🛡️ Connexion sécurisée SSL 256 bits" },
                 it: { title: "Sicurezza e Termini", sub: "Accetta il nostro protocollo per accedere agli sconti ufficiali e riservare il tuo stock.", btnAccept: "ACCETTA I TERMINI E PROCEDI", footer: "🛡️ Connessione Sicura SSL a 256 Bit" },
                 nl: { title: "Beveiliging & Voorwaarden", sub: "Accepteer ons bezoekersprotocol om toegang te krijgen tot officiële kortingen.", btnAccept: "VOORWAARDEN ACCEPTEREN", footer: "🛡️ SSL-beveiligde 256-bits verbinding" },
+                pl: { title: "Bezpieczeństwo i Warunki", sub: "Zaakceptuj protokół odwiedzin, aby uzyskać dostęp do oficjalnych rabatów.", btnAccept: "AKCEPTUJĘ WARUNKI I PRZEJDŹ", footer: "🔒 Bezpieczne Połączenie SSL 256-Bit" },
+                sv: { title: "Säkerhet & Villkor", sub: "Acceptera besöksprotokollet för att få tillgång till officiella rabatter.", btnAccept: "ACCEPTERA VILLKOR & FORTSÄTT", footer: "🛡️ SSL-säkrad 256-bitars Anslutning" },
+                no: { title: "Sikkerhet og Betingelser", sub: "Godta besøksprotokollen for å få tilgang til offisielle rabatter.", btnAccept: "GODTA VILKÅR OG FORTSETT", footer: "🛡️ SSL-sikret 256-biters Tilkobling" },
+                da: { title: "Sikkerhed & Betingelser", sub: "Accepter besøgsprotokollen for at få adgang til officielle rabatter.", btnAccept: "ACCEPTER VILKÅR OG FORTSÆT", footer: "🛡️ SSL-sikret 256-bit Forbindelse" },
+                fi: { title: "Turvallisuus ja Ehdot", sub: "Hyväksy kävijäprotokolla päästäksesi virallisiin alennuksiin.", btnAccept: "HYVÄKSY EHDOT JA JATKA", footer: "🛡️ SSL-suojattu 256-bittinen Yhteys" },
+                ru: { title: "Безопасность и условия", sub: "Примите протокол посетителя для доступа к официальным скидкам.", btnAccept: "ПРИНЯТЬ УСЛОВИЯ И ПРОДОЛЖИТЬ", footer: "🛡️ Защищенное 256-битное SSL-соединение" },
+                tr: { title: "Güvenlik ve Koşullar", sub: "Resmi indirimlere ve stok rezervasyonuna erişmek için koşulları kabul edin.", btnAccept: "KOŞULLARI KABUL ET VE DEVAM ET", footer: "🛡️ 256-Bit SSL Güvenli Bağlantı" },
+                ar: { title: "الأمان والشروط", sub: "قبول بروتوكول الزائر للوصول إلى الخصومات الرسمية وحجز المخزون.", btnAccept: "الموافقة على الشروط والمتابعة", footer: "🛡️ اتصال آمن ومشفر 256-Bit SSL" },
                 ja: { title: "セキュリティと利用規約", sub: "公式割引と在庫予約にアクセスするには、訪問者プロトコルに同意してください。", btnAccept: "規約に同意して進む", footer: "🛡️ SSL 256ビット暗号化通信" },
-                ko: { title: "보안 및 약관 확인", sub: "공식 할인 및 재고 선점을 위해 방문자 보안 프로토콜에 동의해 주세요.", btnAccept: "약관 동의 및 진행", footer: "🛡️ SSL 256비트 암호화 연결" }
+                ko: { title: "보안 및 약관 확인", sub: "공식 할인 및 재고 선점을 위해 방문자 보안 프로토콜에 동의해 주세요.", btnAccept: "약관 동의 및 진행", footer: "🛡️ SSL 256비트 암호화 연결" },
+                zh: { title: "安全与条款验证", sub: "接受访问协议以获取官方折扣并锁定库存。", btnAccept: "接受条款并继续", footer: "🛡️ SSL 256位加密连接" },
+                hi: { title: "सुरक्षा और शर्तें", sub: "आधिकारिक छूट और स्टॉक आरक्षण तक पहुँचने के लिए शर्तों को स्वीकार करें।", btnAccept: "शर्तें स्वीकार करें और आगे बढ़ें", footer: "🛡️ SSL सुरक्षित 256-बिट कनेक्शन" },
+                id: { title: "Keamanan & Ketentuan", sub: "Terima protokol pengunjung untuk mengakses diskon resmi dan reservasi stok.", btnAccept: "TERIMA KETENTUAN & LANJUTKAN", footer: "🛡️ Koneksi Aman SSL 256-Bit" }
             },
             gender: {
                 en: { title: "Select Your Profile", sub: "Choose your gender profile to load the custom formulation and stock allocation.", btnMale: "👨 MALE / FOR MEN", btnFemale: "👩 FEMALE / FOR WOMEN", footer: "✨ Custom Formulation Available" },
@@ -145,8 +189,19 @@
                 fr: { title: "Sélectionnez votre Profil", sub: "Choisissez votre profil pour charger la formulation personnalisée.", btnMale: "👨 HOMME / POUR HOMMES", btnFemale: "👩 FEMME / POUR FEMMES", footer: "✨ Formule sur mesure disponible" },
                 it: { title: "Seleziona il tuo Profilo", sub: "Scegli il tuo profilo per caricare la formulazione personalizzata.", btnMale: "👨 MASCHIO / PER UOMINI", btnFemale: "👩 FEMMINA / PER DONNE", footer: "✨ Formulazione Personalizzata Disponibile" },
                 nl: { title: "Selecteer uw Profiel", sub: "Kies uw profiel om de aangepaste formule te laden.", btnMale: "👨 MANNELIJK / VOOR MANNEN", btnFemale: "👩 VROUWELIJK / VOOR VROUWEN", footer: "✨ Aangepaste Formule Beschikbaar" },
+                pl: { title: "Wybierz Swój Profil", sub: "Wybierz swój profil, aby wczytać spersonalizowaną formułę.", btnMale: "👨 MĘŻCZYZNA / DLA MĘŻCZYZN", btnFemale: "👩 KOBIETA / DLA KOBIET", footer: "✨ Dostępna Spersonalizowana Formuła" },
+                sv: { title: "Välj Din Profil", sub: "Välj din profil för att ladda den anpassade formeln.", btnMale: "👨 MAN / FÖR MÄN", btnFemale: "👩 KVINNA / FÖR KVINNOR", footer: "✨ Anpassad Formel Tillgänglig" },
+                no: { title: "Velg Din Profil", sub: "Velg din profil for å laste inn den tilpassede formelen.", btnMale: "👨 MANN / FOR MENN", btnFemale: "👩 KVINNE / FOR KVINNER", footer: "✨ Tilpasset Formel Tilgjengelig" },
+                da: { title: "Vælg Din Profil", sub: "Vælg din profil for at indlæse den tilpassede formel.", btnMale: "👨 MAND / TIL MÆND", btnFemale: "👩 KVINDE / TIL KVINDER", footer: "✨ Tilpasset Formel Tilgængelig" },
+                fi: { title: "Valitse Profiilisi", sub: "Valitse profiilisi ladataaksesi räätälöidyn koostumuksen.", btnMale: "👨 MIES / MIEHILLE", btnFemale: "👩 NAINEN / NAISILLE", footer: "✨ Räätälöity Koostumus Saatavilla" },
+                ru: { title: "Выберите ваш профиль", sub: "Выберите ваш профиль для загрузки персональной формулы.", btnMale: "👨 МУЖЧИНА / ДЛЯ МУЖЧИН", btnFemale: "👩 ЖЕНЩИНА / ДЛЯ ЖЕНЩИН", footer: "✨ Доступна персональная формула" },
+                tr: { title: "Profilinizi Seçin", sub: "Kişiselleştirilmiş formülü yüklemek için profilinizi seçin.", btnMale: "👨 ERKEK / ERKEKLER İÇİN", btnFemale: "👩 KADIN / KADINLAR İÇİN", footer: "✨ Özel Formül Mevcut" },
+                ar: { title: "حدد ملفك الشخصي", sub: "اختر جنسك لتحميل التركيبة المخصصة وتخصيص المخزون.", btnMale: "👨 رجل / للرجال", btnFemale: "👩 امرأة / للنساء", footer: "✨ تركيبة مخصصة متوفرة" },
                 ja: { title: "プロフィールを選択", sub: "カスタムフォーミュラと在庫を読み込むため、プロファイルを選択してください。", btnMale: "👨 男性向け (MALE)", btnFemale: "👩 女性向け (FEMALE)", footer: "✨ カスタムフォーミュラ適用中" },
-                ko: { title: "프로필을 선택하세요", sub: "맞춤형 포뮬러 및 재고 할당을 위해 프로필을 선택해 주세요.", btnMale: "👨 남성용 (MALE)", btnFemale: "👩 여성용 (FEMALE)", footer: "✨ 맞춤형 포뮬러 적용 완료" }
+                ko: { title: "프로필을 선택하세요", sub: "맞춤형 포뮬러 및 재고 할당을 위해 프로필을 선택해 주세요.", btnMale: "👨 남성용 (MALE)", btnFemale: "👩 여성용 (FEMALE)", footer: "✨ 맞춤형 포뮬러 적용 완료" },
+                zh: { title: "选择您的身份", sub: "选择您的性别以加载专属定制配方及库存分配。", btnMale: "👨 男士 / 专属", btnFemale: "👩 女士 / 专属", footer: "✨ 提供专属定制配方" },
+                hi: { title: "अपना प्रोफाइल चुनें", sub: "कस्टम फॉर्मूला और स्टॉक लोड करने के लिए अपना लिंग चुनें।", btnMale: "👨 पुरुष / पुरुषों के लिए", btnFemale: "👩 महिला / महिलाओं के लिए", footer: "✨ अनुकूलित फॉर्मूला उपलब्ध" },
+                id: { title: "Pilih Profil Anda", sub: "Pilih profil Anda untuk memuat formula kustom dan alokasi stok.", btnMale: "👨 PRIA / UNTUK PRIA", btnFemale: "👩 WANITA / UNTUK WANITA", footer: "✨ Formula Kustom Tersedia" }
             }
         };
 
@@ -157,12 +212,13 @@
             const bgUrl = document.getElementById('bgUrl').value;
             const accent = document.getElementById('accentColor').value;
 
+            const isRtl = (lang === 'ar') ? 'dir="rtl"' : '';
             let layoutContent = "";
 
             if (type === 'country') {
                 const t = DATA.country[lang];
                 layoutContent = `
-                <div class="modal-card layout-country">
+                <div class="modal-card layout-country" ${isRtl}>
                     <a href="${affLink}" class="close-btn">&times;</a>
                     <span class="badge">${t.badge}</span>
                     <h1 class="modal-title">${t.title}</h1>
@@ -181,7 +237,7 @@
             else if (type === 'age') {
                 const t = DATA.age[lang];
                 layoutContent = `
-                <div class="modal-card layout-age">
+                <div class="modal-card layout-age" ${isRtl}>
                     <a href="${affLink}" class="close-btn">&times;</a>
                     <div class="warning-icon">🔞</div>
                     <h1 class="modal-title">${t.title}</h1>
@@ -196,7 +252,7 @@
             else if (type === 'cookies') {
                 const t = DATA.cookies[lang];
                 layoutContent = `
-                <div class="modal-card layout-cookies">
+                <div class="modal-card layout-cookies" ${isRtl}>
                     <a href="${affLink}" class="close-btn">&times;</a>
                     <div class="cookies-header">
                         <span class="shield-icon">🛡️</span>
@@ -212,7 +268,7 @@
             else if (type === 'gender') {
                 const t = DATA.gender[lang];
                 layoutContent = `
-                <div class="modal-card layout-gender">
+                <div class="modal-card layout-gender" ${isRtl}>
                     <a href="${affLink}" class="close-btn">&times;</a>
                     <h1 class="modal-title">${t.title}</h1>
                     <p class="modal-subtitle">${t.sub}</p>
@@ -229,7 +285,7 @@
             }
 
             return `<!DOCTYPE html>
-<html lang="${lang}">
+<html lang="${lang}" ${isRtl}>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -278,6 +334,11 @@
         .layout-gender .gender-card { flex: 1; text-decoration: none; }
         .layout-gender .gender-btn { background: #21262d; border: 2px solid #30363d; padding: 20px 10px; border-radius: 12px; color: #fff; font-size: 14px; font-weight: 700; transition: all 0.2s; }
         .layout-gender .gender-card:hover .gender-btn { border-color: ${accent}; background: ${accent}11; }
+
+        /* SUPORTE PARA IDIOMAS RTL (ÁRABE) */
+        *[dir="rtl"] { direction: rtl; text-align: right; }
+        *[dir="rtl"] .close-btn { right: auto; left: 20px; }
+        *[dir="rtl"] .footer-text, *[dir="rtl"] .layout-age, *[dir="rtl"] .layout-gender { text-align: center; }
     </style>
 </head>
 <body>
