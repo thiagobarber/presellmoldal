@@ -14,9 +14,11 @@
         .form-group { display: flex; flex-direction: column; gap: 6px; }
         .form-group label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; }
         .form-group input, .form-group select { padding: 12px; border-radius: 8px; border: 1px solid #374151; background-color: #1f2937; color: #fff; font-size: 14px; outline: none; transition: border 0.2s; }
-        .form-group input[type="color"] { height: 48px; padding: 4px; cursor: pointer; }
+        .form-group input[type="color"] { height: 44px; padding: 4px; cursor: pointer; width: 100%; }
         .form-group input:focus, .form-group select:focus { border-color: #38bdf8; }
         
+        .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
         .btn { padding: 10px 18px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; font-size: 13px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-secondary { background-color: #38bdf8; color: #0f172a; }
         .btn-secondary:hover { background-color: #0284c7; color: #fff; }
@@ -50,6 +52,7 @@
         <div class="form-group">
             <label>1. Tipo de Presell</label>
             <select id="presellType" onchange="updateGenerator()">
+                <option value="promo">🎁 Oferta Especial / Desconto Exclusivo</option>
                 <option value="language">🌐 Seleção de Idioma (Language Modal)</option>
                 <option value="country">🗺️ Validação de País/Região (Nativa do Idioma)</option>
                 <option value="age">🔞 Verificação de Idade (Alerta / Minimalista)</option>
@@ -58,13 +61,19 @@
             </select>
         </div>
 
-        <div class="form-group">
-            <label>2. Cor Principal do Modal</label>
-            <input type="color" id="accentColor" value="#3b82f6" oninput="updateGenerator()">
+        <div class="color-row">
+            <div class="form-group">
+                <label>2. Cor do Card</label>
+                <input type="color" id="cardBgColor" value="#161b22" oninput="updateGenerator()">
+            </div>
+            <div class="form-group">
+                <label>3. Cor de Destaque</label>
+                <input type="color" id="accentColor" value="#3b82f6" oninput="updateGenerator()">
+            </div>
         </div>
 
         <div class="form-group">
-            <label>3. Idioma / Região Global (20 Opções)</label>
+            <label>4. Idioma / Região Global (20 Opções)</label>
             <select id="presellLang" onchange="updateGenerator()">
                 <option value="en">🇺🇸 Inglês (EUA / Global)</option>
                 <option value="es">🇪🇸 Espanhol (Espanha / LatAm)</option>
@@ -90,12 +99,12 @@
         </div>
 
         <div class="form-group">
-            <label>4. Seu Link de Afiliado</label>
+            <label>5. Seu Link de Afiliado</label>
             <input type="url" id="affLink" value="https://cognifortplus.com/ds/indexts.php?aff=thiagobarber&cam=" oninput="updateGenerator()">
         </div>
 
         <div class="form-group">
-            <label>5. URL de Fundo (Site da Oferta)</label>
+            <label>6. URL de Fundo (Site da Oferta)</label>
             <input type="url" id="bgUrl" value="https://cognifortplus.com/ds/indexts.php?aff=thiagobarber&cam=" oninput="updateGenerator()">
         </div>
     </div>
@@ -123,6 +132,28 @@
 
     <script>
         const DATA = {
+            promo: {
+                en: { badge: "Special Promotion Unlocked", tag: "Limited Availability", title: "Claim Your Exclusive Discount", sub: "A temporary special price has been applied for your session. Activate it before slots expire.", offerText: "🔥 Up to 70% OFF Applied Automatically", cta: "REDEEM SPECIAL OFFER NOW »", footer: "✓ Safe 256-Bit Checkout • 100% Satisfaction Guarantee" },
+                es: { badge: "Promoción Especial Desbloqueada", tag: "Disponibilidad Limitada", title: "Reclame su Descuento Exclusivo", sub: "Se ha aplicado un precio especial temporal para su sesión. Actívelo antes de que finalice.", offerText: "🔥 Hasta 70% OFF Aplicado Automáticamente", cta: "RECLAMAR OFERTA ESPECIAL »", footer: "✓ Compra Segura SSL • Garantía de Satisfacción" },
+                pt: { badge: "Promoção Especial Desbloqueada", tag: "Vagas Limitadas", title: "Resgate seu Desconto Exclusivo", sub: "Um valor promocional temporário foi liberado para o seu acesso. Garanta antes do término.", offerText: "🔥 Até 70% de Desconto Aplicado", cta: "RESGATAR DESCONTO AGORA »", footer: "✓ Compra 100% Segura • Garantia de Satisfação" },
+                de: { badge: "Sonderaktion Freigeschaltet", tag: "Begrenzte Verfügbarkeit", title: "Sichern Sie Ihren Exklusivrabatt", sub: "Für Ihre Sitzung wurde ein zeitlich begrenzter Sonderpreis aktiviert. Jetzt einlösen.", offerText: "🔥 Bis zu 70% Rabatt Automatisch Angewendet", cta: "JETZT SONDERANGEBOT SICHERN »", footer: "✓ Sichere SSL-Verschlüsselung • Zufriedenheitsgarantie" },
+                fr: { badge: "Promotion Spéciale Débloquée", tag: "Disponibilité Limitée", title: "Profitez de votre Remise Exclusive", sub: "Un tarif préférentiel a été appliqué pour votre session. Activez-le avant expiration.", offerText: "🔥 Jusqu'à 70% de Réduction Appliquée", cta: "PROFITER DE L'OFFRE SPÉCIALE »", footer: "✓ Paiement Sécurisé SSL • Garantie de Satisfaction" },
+                it: { badge: "Promozione Speciale Sbloccata", tag: "Disponibilità Limitata", title: "Richiedi il tuo Sconto Esclusivo", sub: "È stato riservato un prezzo speciale per la tua sessione. Attivalo subito.", offerText: "🔥 Fino al 70% di Sconto Applicato", cta: "RISCATTA L'OFFERTA ORA »", footer: "✓ Pagamento Sicuro SSL • Garanzia di Soddisfazione" },
+                nl: { badge: "Speciale Promotie Ontgrendeld", tag: "Beperkte Beschikbaarheid", title: "Claim uw Exclusieve Korting", sub: "Er is een tijdelijke speciale prijs geactiveerd voor uw sessie. Claim deze nu.", offerText: "🔥 Tot 70% Korting Automatisch Toegepast", cta: "CLAIM SPECIALE AANBIEDING »", footer: "✓ Veilige SSL Betaling • Tevredenheidsgarantie" },
+                pl: { badge: "Promocja Specjalna Odblokowana", tag: "Ograniczona Dostępność", title: "Odbierz Swój Wyjątkowy Rabat", sub: "Tymczasowa cena promocyjna została przypisana do Twojej sesji. Aktywuj ją teraz.", offerText: "🔥 Do 70% Rabatu Naliczono Automatycznie", cta: "ODBIERZ ZNIŻKĘ TERAZ »", footer: "✓ Bezpieczna Płatność SSL • Gwarancja Satysfakcji" },
+                sv: { badge: "Specialkampanj Upplåst", tag: "Begränsad Tillgång", title: "Hämta Din Exklusiva Rabatt", sub: "Ett tillfälligt specialpris har aktiverats för din session. Utnyttja erbjudandet nu.", offerText: "🔥 Upp till 70% Rabatt Tillämpad", cta: "HÄMTA ERBJUDANDET NU »", footer: "✓ Säker SSL-Betalning • Nöjdhetsgaranti" },
+                no: { badge: "Spesialkampanje Låst Opp", tag: "Begrenset Tilgjengelighet", title: "Hent Din Eksklusive Rabatt", sub: "En midlertidig spesialpris er aktivert for din økt. Benytt tilbudet nå.", offerText: "🔥 Opptil 70% Rabatt Automatisk Lagt Til", cta: "HENT SPESIALTILBUDET NÅ »", footer: "✓ Sikker SSL-Betaling • Fornøydgaranti" },
+                da: { badge: "Specialkampagne Låst Op", tag: "Begrænset Antal", title: "Indløs Din Eksklusive Rabat", sub: "En midlertidig specialpris er aktiveret for din session. Indløs den i dag.", offerText: "🔥 Op til 70% Rabat Anvendt", cta: "INDLØS SPECIALTILBUD NU »", footer: "✓ Sikker SSL-Betaling • Tilfredshedsgaranti" },
+                fi: { badge: "Erikoiskampanja Avattu", tag: "Rajoitettu Saatavuus", title: "Lunasta Ainutlaatuinen Alennuksesi", sub: "Istunnollesi on aktivoitu väliaikainen erikoishinta. Lunasta ennen kuin aika loppuu.", offerText: "🔥 Jopa 70% Alennus Myönnetty", cta: "LUNASTA ERIKOISTARJOUS NYT »", footer: "✓ Turvallinen SSL-Maksu • Tyytyväisyystakuu" },
+                ru: { badge: "Специальная акция активирована", tag: "Ограниченное количество", title: "Получите эксклюзивную скидку", sub: "Для вашей сессии активирована специальная цена. Воспользуйтесь до окончания срока.", offerText: "🔥 Скидка до 70% применена", cta: "ПОЛУЧИТЬ СКИДКУ СЕЙЧАС »", footer: "✓ Безопасная оплата 256-Bit • Гарантия качества" },
+                tr: { badge: "Özel Promosyon Açıldı", tag: "Sınırlı Kontenjan", title: "Özel İndiriminizi Alın", sub: "Oturumunuz için geçici bir özel fiyat tanımlandı. Süre dolmadan önce etkinleştirin.", offerText: "🔥 %70'e Varan İndirim Uygulandı", cta: "FIRSATI ŞİMDİ YAKALA »", footer: "✓ 256-Bit Güvenli Ödeme • Memnuniyet Garantisi" },
+                ar: { badge: "عرض ترويجي خاص متاح", tag: "كميات محدودة", title: "احصل على خصمك الحصري الآن", sub: "تم تطبيق خصم ترويجي خاص لجلسة التصفح الحالية. سارع بالحجز قبل انتهاء العرض.", offerText: "🔥 تم تطبيق خصم يصل إلى 70%", cta: "الحصول على العرض الخاص الآن »", footer: "✓ دفع آمن ومشفر 256-Bit • ضمان الرضا الكامل" },
+                ja: { badge: "特別プロモーション適用中", tag: "数量限定", title: "限定割引を受け取る", sub: "お客様限定の特別価格が適用されました。終了する前に獲得してください。", offerText: "🔥 最大70%OFF 自動適用中", cta: "特別割引を今すぐ適用する »", footer: "✓ SSL 256ビット暗号化決済 • 満足度保証" },
+                ko: { badge: "특별 프로모션 활성화", tag: "한정 수량", title: "독점 할인 혜택 받기", sub: "현재 세션에 대한 한정 특가가 적용되었습니다. 마감되기 전에 혜택을 받으세요.", offerText: "🔥 최대 70% 할인 자동 적용", cta: "지금 특별 할인 받기 »", footer: "✓ SSL 256비트 보안 결제 • 100% 만족 보장" },
+                zh: { badge: "专属优惠已解锁", tag: "限时限量", title: "立即领取专属折扣", sub: "系统已为您的访问应用了限时特惠价格。请在名额结束前激活。", offerText: "🔥 高达70%专属折扣已自动生效", cta: "立即领取特惠 »", footer: "✓ SSL 256位安全支付 • 正品保障" },
+                hi: { badge: "विशेष प्रचार अनलॉक", tag: "सीमित उपलब्धता", title: "अपनी विशेष छूट प्राप्त करें", sub: "आपके सत्र के लिए एक अस्थायी विशेष छूट लागू की गई है। समाप्त होने से पहले सक्रिय करें।", offerText: "🔥 70% तक की छूट स्वचालित रूप से लागू", cta: "अभी विशेष छूट प्राप्त करें »", footer: "✓ 256-बिट सुरक्षित चेकआउट • संतुष्टि की गारंटी" },
+                id: { badge: "Promosi Spesial Terbuka", tag: "Slot Terbatas", title: "Klaim Diskon Eksklusif Anda", sub: "Harga spesial sementara telah diterapkan untuk sesi Anda. Amankan sebelum berakhir.", offerText: "🔥 Diskon Hingga 70% Diterapkan", cta: "KLAIM PROMO SEKARANG »", footer: "✓ Pembayaran Aman SSL 256-Bit • Garansi Kepuasan" }
+            },
             language: {
                 en: { badge: "Official Portal", title: "Choose Your Language", sub: "Please select your preferred language to proceed with regional discounts.", current: "🇺🇸 English (Default)", other1: "🇪🇸 Español", other2: "🇧🇷 Português", other3: "🇩🇪 Deutsch", cta: "Continue in English »", footer: "🌐 Geo-Localized Content & Currency" },
                 es: { badge: "Portal Oficial", title: "Elija su Idioma", sub: "Seleccione su idioma preferido para acceder a los descuentos regionales.", current: "🇪🇸 Español (Predeterminado)", other1: "🇺🇸 English", other2: "🇧🇷 Português", other3: "🇫🇷 Français", cta: "Continuar en Español »", footer: "🌐 Contenido y Moneda Localizada" },
@@ -176,12 +207,12 @@
                 it: { title: "RESTRIZIONE DI ETÀ 18+", sub: "Questa presentazione contiene dettagli sull'offerta riservata. Conferma la tua età.", btnYes: "SÌ, HO 18+ ANNI", btnNo: "MENO DI 18 ANNI", footer: "🔒 Verifica di Accesso Crittografata" },
                 nl: { title: "LEEFTIJDSBEPERKING 18+", sub: "Deze presentatie bevat beperkte aanbiedingen. Bevestig uw leeftijd.", btnYes: "JA, IK BEN 18+", btnNo: "JONGER DAN 18", footer: "🔒 Beveiligde Toegangsverificatie" },
                 pl: { title: "OGRANICZENIE WIEKU 18+", sub: "Ta prezentacja zawiera zastrzeżone oferty. Potwierdź swój wiek.", btnYes: "TAK, MAM 18+ LAT", btnNo: "MAM PONIŻEJ 18 LAT", footer: "🔒 Szyfrowana Weryfikacja Dostępu" },
-                sv: { title: "ÅLDERSGRÄNS 18+", sub: "Denna presentation innehåller begränsade erjudanden. Bekräfta din ålder.", btnYes: "JA, JAG ÄR 18+", btnNo: "NEJ, UNDER 18", footer: "🔒 Krypterad Verifiering" },
+                sv: { title: "ÅLDERSGRÄNS 18+", sub: "Denna presentation innehåller begränsade erbjudanden. Bekräfta din ålder.", btnYes: "JA, JAG ÄR 18+", btnNo: "NEJ, UNDER 18", footer: "🔒 Krypterad Verifiering" },
                 no: { title: "ALDERSGRENSE 18+", sub: "Denne presentasjonen inneholder begrensede tilbud. Vennligst bekreft din alder.", btnYes: "JA, JEG ER 18+", btnNo: "UNDER 18 ÅR", footer: "🔒 Kryptert Tilgangsverifisering" },
                 da: { title: "ALDERSBEGRÆNSNING 18+", sub: "Denne præsentation indeholder begrænsede tilbud. Bekræft venligst din alder.", btnYes: "JA, JEG ER 18+", btnNo: "UNDER 18 ÅR", footer: "🔒 Krypteret Adgangsverificering" },
                 fi: { title: "IKÄRAJA 18+", sub: "Tämä esitys sisältää rajoitettuja tarjouksia. Vahvista ikäsi.", btnYes: "KYLLÄ, OLEN 18+", btnNo: "ALLE 18-VUOTIAS", footer: "🔒 Krüptottu Pääsyn Vahvistus" },
                 ru: { title: "ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ 18+", sub: "Презентация содержит эксклюзивные предложения. Подтвердите возраст.", btnYes: "ДА, МНЕ ЕСТЬ 18", btnNo: "НЕТ, МЛАДШЕ 18", footer: "🔒 Защищенная проверка доступа" },
-                tr: { title: "YAŞ SINITLAMASI 18+", sub: "Bu sunum özel teklifler içerir. Lütfen yaşınızı doğrulayın.", btnYes: "EVET, 18 YAŞINDAYIM+", btnNo: "18 YAŞINDAN KÜÇÜĞÜM", footer: "🔒 Şifreli Erişim Doğrulaması" },
+                tr: { title: "YAŞ SINIRLAMASI 18+", sub: "Bu sunum özel teklifler içerir. Lütfen yaşınızı doğrulayın.", btnYes: "EVET, 18 YAŞINDAYIM+", btnNo: "18 YAŞINDAN KÜÇÜĞÜM", footer: "🔒 Şifreli Erişim Doğrulaması" },
                 ar: { title: "تقييد العمر +18", sub: "يحتوي هذا العرض على تفاصيل حصريّة. يرجى تأكيد عمرك للبدء.", btnYes: "نعم، عمري 18 أو أكثر", btnNo: "أقل من 18 عاماً", footer: "🔒 تحقق آمن ومشفر" },
                 ja: { title: "年齢制限 18歳以上", sub: "このプレゼンテーションには限定オファーが含まれています。年齢を確認してください。", btnYes: "はい、18歳以上です", btnNo: "18歳未満です", footer: "🔒 暗号化されたアクセス検証" },
                 ko: { title: "연령 제한 18세 이상", sub: "이 발표에는 제한된 혜택 정보가 포함되어 있습니다. 연령을 확인해 주세요.", btnYes: "예, 18세 이상입니다", btnNo: "18세 미만입니다", footer: "🔒 암호화된 액세스 확인" },
@@ -217,7 +248,7 @@
                 pt: { title: "Selecione seu Perfil", sub: "Escolha seu perfil para carregar a formulação personalizada e estoque.", btnMale: "👨 MASCULINO / HOMENS", btnFemale: "👩 FEMININO / MULHERES", footer: "✨ Fórmula Sob Medida Disponível" },
                 de: { title: "Wählen Sie Ihr Profil", sub: "Wählen Sie Ihr Geschlecht, um die maßgeschneiderte Formel zu laden.", btnMale: "👨 MÄNNLICH / FÜR MÄNNER", btnFemale: "👩 WEIBLICH / FÜR FRAUEN", footer: "✨ Maßgeschneiderte Formel Verfügbar" },
                 fr: { title: "Sélectionnez votre Profil", sub: "Choisissez votre profil pour charger la formulation personnalisée.", btnMale: "👨 HOMME / POUR HOMMES", btnFemale: "👩 FEMME / POUR FEMMES", footer: "✨ Formule sur mesure disponible" },
-                it: { title: "Seleziona il tuo Profilo", sub: "Scegli il tuo profilo per caricare la formulazione personalizzata.", btnMale: "👨 MASCHIO / PER UOMINI", btnFemale: "👩 FEMMINA / PER DONNE", footer: "✨ Formulazione Personalizada Disponible" },
+                it: { title: "Seleziona il tuo Profilo", sub: "Scegli il tuo profilo per caricare la formulazione personalizzata.", btnMale: "👨 MASCHIO / PER UOMINI", btnFemale: "👩 FEMMINA / PER DONNE", footer: "✨ Formulazione Personalizzata Disponibile" },
                 nl: { title: "Selecteer uw Profiel", sub: "Kies uw profiel om de aangepaste formule te laden.", btnMale: "👨 MANNELIJK / VOOR MANNEN", btnFemale: "👩 VROUWELIJK / VOOR VROUWEN", footer: "✨ Aangepaste Formule Beschikbaar" },
                 pl: { title: "Wybierz Swój Profil", sub: "Wybierz swój profil, aby wczytać spersonalizowaną formułę.", btnMale: "👨 MĘŻCZYZNA / DLA MĘŻCZYZN", btnFemale: "👩 KOBIETA / DLA KOBIET", footer: "✨ Dostępna Spersonalizowana Formuła" },
                 sv: { title: "Välj Din Profil", sub: "Välj din profil för att ladda den anpassade formeln.", btnMale: "👨 MAN / FÖR MÄN", btnFemale: "👩 KVINNA / FÖR KVINNOR", footer: "✨ Anpassad Formel Tillgänglig" },
@@ -241,11 +272,32 @@
             const affLink = document.getElementById('affLink').value || '#';
             const bgUrl = document.getElementById('bgUrl').value || 'about:blank';
             const accent = document.getElementById('accentColor').value;
+            const cardBg = document.getElementById('cardBgColor').value;
 
             const isRtl = (lang === 'ar') ? 'dir="rtl"' : '';
             let layoutContent = "";
 
-            if (type === 'language') {
+            if (type === 'promo') {
+                const t = DATA.promo[lang] || DATA.promo['en'];
+                layoutContent = `
+                <div class="modal-card layout-promo" ${isRtl}>
+                    <a href="${affLink}" class="close-btn">&times;</a>
+                    <div class="promo-header-badge">
+                        <span class="badge badge-glow">${t.badge}</span>
+                        <span class="tag-limited">${t.tag}</span>
+                    </div>
+                    <h1 class="modal-title">${t.title}</h1>
+                    <p class="modal-subtitle">${t.sub}</p>
+                    
+                    <a href="${affLink}" class="promo-box">
+                        <div class="promo-box-text">${t.offerText}</div>
+                    </a>
+                    
+                    <a href="${affLink}" class="cta-btn pulse">${t.cta}</a>
+                    <div class="footer-text">${t.footer}</div>
+                </div>`;
+            }
+            else if (type === 'language') {
                 const t = DATA.language[lang] || DATA.language['en'];
                 layoutContent = `
                 <div class="modal-card layout-lang" ${isRtl}>
@@ -343,7 +395,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification</title>
+    <title>Special Access</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, sans-serif; }
         body, html { height: 100%; width: 100%; overflow: hidden; background: #0d1117; color: #fff; }
@@ -353,47 +405,65 @@
         .overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(10, 15, 30, 0.75); z-index:2; }
         .modal-wrapper { position: absolute; top:0; left:0; width:100%; height:100%; z-index:3; display:flex; align-items:center; justify-content:center; padding:20px; }
         
-        .modal-card { width:100%; max-width:500px; background:#161b22; border:1px solid #30363d; border-radius:16px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.8); position:relative; padding:32px 28px; }
-        .close-btn { position:absolute; top:16px; right:20px; font-size:24px; font-weight:bold; color:#8b949e; text-decoration:none; line-height:1; }
+        .modal-card { width:100%; max-width:500px; background: ${cardBg}; border:1px solid rgba(255,255,255,0.12); border-radius:16px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.8); position:relative; padding:32px 28px; }
+        .close-btn { position:absolute; top:16px; right:20px; font-size:24px; font-weight:bold; color: rgba(255,255,255,0.5); text-decoration:none; line-height:1; }
         .close-btn:hover { color:#fff; }
         
         .modal-title { font-size:22px; font-weight:700; color:#fff; line-height:1.3; margin-bottom:8px; }
-        .modal-subtitle { font-size:14px; color:#8b949e; line-height:1.5; margin-bottom:20px; }
-        .footer-text { text-align:center; font-size:12px; color:#8b949e; margin-top:16px; }
+        .modal-subtitle { font-size:14px; color: rgba(255,255,255,0.7); line-height:1.5; margin-bottom:20px; }
+        .footer-text { text-align:center; font-size:12px; color: rgba(255,255,255,0.6); margin-top:16px; }
         
-        .cta-btn { display:block; width:100%; background: ${accent}; color:#fff; text-align:center; padding:16px; font-size:15px; font-weight:700; text-decoration:none; border-radius:10px; text-transform:uppercase; box-shadow: 0 4px 14px ${accent}66; transition: filter 0.2s; }
-        .cta-btn:hover { filter: brightness(1.15); }
+        .badge { display:inline-block; background: ${accent}22; color: ${accent}; border:1px solid ${accent}66; font-size:11px; font-weight:700; text-transform:uppercase; padding:4px 10px; border-radius:20px; margin-bottom:12px; }
 
-        .layout-lang .badge { display:inline-block; background: ${accent}22; color: ${accent}; border:1px solid ${accent}66; font-size:11px; font-weight:700; text-transform:uppercase; padding:4px 10px; border-radius:20px; margin-bottom:12px; }
-        .layout-lang .lang-option { background:#21262d; border:2px solid ${accent}; border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:#fff; margin-bottom:12px; font-size:14px; font-weight:700; }
+        .cta-btn { display:block; width:100%; background: ${accent}; color:#fff; text-align:center; padding:16px; font-size:15px; font-weight:700; text-decoration:none; border-radius:10px; text-transform:uppercase; box-shadow: 0 4px 14px ${accent}66; transition: transform 0.2s, filter 0.2s; }
+        .cta-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+        /* Layout Promoção */
+        .layout-promo .promo-header-badge { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .layout-promo .promo-header-badge .badge { margin-bottom: 0; }
+        .layout-promo .tag-limited { font-size: 11px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 4px 8px; border-radius: 6px; text-transform: uppercase; }
+        .layout-promo .promo-box { display: block; background: rgba(255,255,255,0.05); border: 2px dashed ${accent}; border-radius: 12px; padding: 16px; text-align: center; text-decoration: none; margin-bottom: 20px; }
+        .layout-promo .promo-box-text { color: #fff; font-size: 15px; font-weight: 700; }
+        .layout-promo .pulse { animation: pulseBtn 2s infinite; }
+        @keyframes pulseBtn {
+            0% { box-shadow: 0 0 0 0 ${accent}88; }
+            70% { box-shadow: 0 0 0 14px rgba(0, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+        }
+
+        /* Layout Idioma */
+        .layout-lang .lang-option { background: rgba(255,255,255,0.06); border:2px solid ${accent}; border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:#fff; margin-bottom:12px; font-size:14px; font-weight:700; }
         .layout-lang .active-dot { color: ${accent}; font-size:18px; }
         .layout-lang .lang-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-bottom:18px; }
-        .layout-lang .lang-option-pill { background:#0d1117; border:1px solid #30363d; border-radius:8px; padding:10px 4px; text-align:center; text-decoration:none; color:#8b949e; font-size:12px; font-weight:600; transition:all 0.2s; }
+        .layout-lang .lang-option-pill { background: rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:10px 4px; text-align:center; text-decoration:none; color: rgba(255,255,255,0.7); font-size:12px; font-weight:600; transition:all 0.2s; }
         .layout-lang .lang-option-pill:hover { border-color: ${accent}; color:#fff; }
 
-        .layout-country .badge { display:inline-block; background: ${accent}22; color: ${accent}; border:1px solid ${accent}66; font-size:11px; font-weight:700; text-transform:uppercase; padding:4px 10px; border-radius:20px; margin-bottom:12px; }
-        .layout-country .country-option { background:#21262d; border:1px solid #30363d; border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:#fff; margin-bottom:12px; font-size:14px; font-weight:600; }
+        /* Layout País */
+        .layout-country .country-option { background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:#fff; margin-bottom:12px; font-size:14px; font-weight:600; }
         .layout-country .main-opt { border: 2px solid ${accent}; }
         .layout-country .status-tag { font-size:11px; background: ${accent}; color:#fff; padding:3px 8px; border-radius:6px; font-weight:700; }
 
+        /* Layout Idade */
         .layout-age { text-align: center; border-top: 4px solid ${accent}; }
         .layout-age .warning-icon { font-size: 40px; margin-bottom: 10px; }
         .layout-age .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        .layout-age .btn-no { display:block; width:100%; background:#21262d; color:#8b949e; text-align:center; padding:16px; font-size:13px; font-weight:700; text-decoration:none; border-radius:10px; border:1px solid #30363d; }
+        .layout-age .btn-no { display:block; width:100%; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); text-align:center; padding:16px; font-size:13px; font-weight:700; text-decoration:none; border-radius:10px; border:1px solid rgba(255,255,255,0.15); }
 
-        .layout-cookies { max-width: 550px; background: #0d1117; border: 1px solid ${accent}88; }
+        /* Layout Cookies */
+        .layout-cookies { max-width: 550px; }
         .layout-cookies .cookies-header { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
         .layout-cookies .shield-icon { font-size: 32px; background: ${accent}22; padding: 10px; border-radius: 12px; }
 
+        /* Layout Gênero */
         .layout-gender { text-align: center; }
         .layout-gender .gender-grid { display: flex; gap: 12px; margin-bottom: 12px; }
         .layout-gender .gender-card { flex: 1; text-decoration: none; }
-        .layout-gender .gender-btn { background: #21262d; border: 2px solid #30363d; padding: 20px 10px; border-radius: 12px; color: #fff; font-size: 14px; font-weight: 700; transition: all 0.2s; }
-        .layout-gender .gender-card:hover .gender-btn { border-color: ${accent}; background: ${accent}11; }
+        .layout-gender .gender-btn { background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.15); padding: 20px 10px; border-radius: 12px; color: #fff; font-size: 14px; font-weight: 700; transition: all 0.2s; }
+        .layout-gender .gender-card:hover .gender-btn { border-color: ${accent}; background: ${accent}22; }
 
         *[dir="rtl"] { direction: rtl; text-align: right; }
         *[dir="rtl"] .close-btn { right: auto; left: 20px; }
-        *[dir="rtl"] .footer-text, *[dir="rtl"] .layout-age, *[dir="rtl"] .layout-gender { text-align: center; }
+        *[dir="rtl"] .footer-text, *[dir="rtl"] .layout-age, *[dir="rtl"] .layout-gender, *[dir="rtl"] .layout-promo { text-align: center; }
     </style>
 </head>
 <body>
