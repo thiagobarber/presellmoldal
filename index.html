@@ -17,22 +17,28 @@
         .form-group input[type="color"] { height: 48px; padding: 4px; cursor: pointer; }
         .form-group input:focus, .form-group select:focus { border-color: #38bdf8; }
         
-        .btn { padding: 14px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; font-size: 14px; transition: all 0.2s; }
-        .btn-primary { background-color: #22c55e; color: #fff; }
-        .btn-primary:hover { background-color: #16a34a; }
+        .btn { padding: 10px 18px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; font-size: 13px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-secondary { background-color: #38bdf8; color: #0f172a; }
+        .btn-secondary:hover { background-color: #0284c7; color: #fff; }
 
         /* Área de Preview e Código */
-        .workspace { flex-grow: 1; display: flex; flex-direction: column; background-color: #030712; }
-        .tabs { display: flex; background-color: #111827; border-bottom: 1px solid #1f2937; }
-        .tab { padding: 14px 24px; cursor: pointer; font-size: 14px; font-weight: 600; color: #9ca3af; border-bottom: 2px solid transparent; }
+        .workspace { flex-grow: 1; display: flex; flex-direction: column; background-color: #030712; height: 100vh; overflow: hidden; }
+        .tabs { display: flex; background-color: #111827; border-bottom: 1px solid #1f2937; flex-shrink: 0; }
+        .tab { padding: 14px 24px; cursor: pointer; font-size: 14px; font-weight: 600; color: #9ca3af; border-bottom: 2px solid transparent; user-select: none; }
         .tab.active { color: #38bdf8; border-bottom-color: #38bdf8; background-color: rgba(56, 189, 248, 0.05); }
         
-        .view-container { flex-grow: 1; position: relative; }
-        .view-page { position: absolute; top:0; left:0; width:100%; height:100%; display:none; }
-        .view-page.active { display:block; }
+        .view-container { flex-grow: 1; position: relative; width: 100%; height: calc(100vh - 49px); }
+        .view-page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
+        .view-page.active { display: flex; flex-direction: column; }
         
-        iframe { width: 100%; height: 100%; border: none; }
-        textarea { width: 100%; height: 100%; background-color: #030712; border: none; color: #38bdf8; padding: 20px; font-family: 'Courier New', monospace; font-size: 13px; resize: none; outline: none; }
+        #previewView { width: 100%; height: 100%; }
+        #codeView { width: 100%; height: 100%; }
+        
+        .code-toolbar { padding: 12px 20px; background-color: #0f172a; border-bottom: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .code-toolbar span { font-size: 13px; color: #9ca3af; font-weight: 600; }
+
+        iframe { width: 100%; height: 100%; border: none; background: #0b0f19; flex-grow: 1; }
+        textarea { flex-grow: 1; width: 100%; height: 100%; background-color: #030712; border: none; color: #38bdf8; padding: 20px; font-family: 'Courier New', monospace; font-size: 13px; resize: none; outline: none; }
     </style>
 </head>
 <body>
@@ -42,8 +48,9 @@
         <h2>⚡ Presell Builder Pro</h2>
         
         <div class="form-group">
-            <label>1. Tipo de Presell (Layout Único)</label>
+            <label>1. Tipo de Presell</label>
             <select id="presellType" onchange="updateGenerator()">
+                <option value="language">🌐 Seleção de Idioma (Language Modal)</option>
                 <option value="country">🗺️ Validação de País/Região (Nativa do Idioma)</option>
                 <option value="age">🔞 Verificação de Idade (Alerta / Minimalista)</option>
                 <option value="cookies">🍪 Banner de Segurança & Cookies (Barra Flutuante)</option>
@@ -53,7 +60,7 @@
 
         <div class="form-group">
             <label>2. Cor Principal do Modal</label>
-            <input type="color" id="accentColor" value="#22c55e" onchange="updateGenerator()">
+            <input type="color" id="accentColor" value="#3b82f6" oninput="updateGenerator()">
         </div>
 
         <div class="form-group">
@@ -61,7 +68,7 @@
             <select id="presellLang" onchange="updateGenerator()">
                 <option value="en">🇺🇸 Inglês (EUA / Global)</option>
                 <option value="es">🇪🇸 Espanhol (Espanha / LatAm)</option>
-                <option value="pt">🇧🇷 Português (Brasil / Portugal)</option>
+                <option value="pt" selected>🇧🇷 Português (Brasil / Portugal)</option>
                 <option value="de">🇩🇪 Alemão (Alemanha / Áustria)</option>
                 <option value="fr">🇫🇷 Francês (França / Canadá)</option>
                 <option value="it">🇮🇹 Italiano (Itália)</option>
@@ -91,15 +98,13 @@
             <label>5. URL de Fundo (Site da Oferta)</label>
             <input type="url" id="bgUrl" value="https://cognifortplus.com/ds/indexts.php?aff=thiagobarber&cam=" oninput="updateGenerator()">
         </div>
-
-        <button class="btn btn-primary" onclick="copyCode()">📋 Copiar Código HTML</button>
     </div>
 
     <!-- ÁREA PRINCIPAL -->
     <div class="workspace">
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('preview')">👁️ Preview em Tempo Real</div>
-            <div class="tab" onclick="switchTab('code')">💻 Código HTML Gerado</div>
+            <div id="tabPreview" class="tab active" onclick="switchTab('preview')">👁️ Preview em Tempo Real</div>
+            <div id="tabCode" class="tab" onclick="switchTab('code')">💻 Código HTML Gerado</div>
         </div>
 
         <div class="view-container">
@@ -107,14 +112,39 @@
                 <iframe id="previewFrame"></iframe>
             </div>
             <div id="codeView" class="view-page">
+                <div class="code-toolbar">
+                    <span>HTML Gerado (Pronto para Uso)</span>
+                    <button class="btn btn-secondary" onclick="copyCode(this)">📋 Copiar Código</button>
+                </div>
                 <textarea id="outputCode" readonly></textarea>
             </div>
         </div>
     </div>
 
     <script>
-        // BANCO DE DADOS COMPLETO - 20 IDIOMAS
         const DATA = {
+            language: {
+                en: { badge: "Official Portal", title: "Choose Your Language", sub: "Please select your preferred language to proceed with regional discounts.", current: "🇺🇸 English (Default)", other1: "🇪🇸 Español", other2: "🇧🇷 Português", other3: "🇩🇪 Deutsch", cta: "Continue in English »", footer: "🌐 Geo-Localized Content & Currency" },
+                es: { badge: "Portal Oficial", title: "Elija su Idioma", sub: "Seleccione su idioma preferido para acceder a los descuentos regionales.", current: "🇪🇸 Español (Predeterminado)", other1: "🇺🇸 English", other2: "🇧🇷 Português", other3: "🇫🇷 Français", cta: "Continuar en Español »", footer: "🌐 Contenido y Moneda Localizada" },
+                pt: { badge: "Portal Oficial", title: "Escolha seu Idioma", sub: "Selecione seu idioma preferido para carregar os descontos da sua região.", current: "🇧🇷 Português (Padrão)", other1: "🇺🇸 English", other2: "🇪🇸 Español", other3: "🇫🇷 Français", cta: "Continuar em Português »", footer: "🌐 Conteúdo e Moeda Localizados" },
+                de: { badge: "Offizielles Portal", title: "Wählen Sie Ihre Sprache", sub: "Wählen Sie Ihre bevorzugte Sprache für regionale Angebote.", current: "🇩🇪 Deutsch (Standard)", other1: "🇺🇸 English", other2: "🇫🇷 Français", other3: "🇮🇹 Italiano", cta: "Auf Deutsch fortfahren »", footer: "🌐 Lokalisierte Inhalte & Währung" },
+                fr: { badge: "Portail Officiel", title: "Choisissez votre langue", sub: "Veuillez sélectionner votre langue pour accéder aux remises régionales.", current: "🇫🇷 Français (Par défaut)", other1: "🇺🇸 English", other2: "🇪🇸 Español", other3: "🇩🇪 Deutsch", cta: "Continuer en Français »", footer: "🌐 Contenu et Devise Localisés" },
+                it: { badge: "Portale Ufficiale", title: "Scegli la tua lingua", sub: "Seleziona la tua lingua preferita per procedere con gli sconti regionali.", current: "🇮🇹 Italiano (Predefinito)", other1: "🇺🇸 English", other2: "🇪🇸 Español", other3: "🇫🇷 Français", cta: "Continua in Italiano »", footer: "🌐 Contenuti e Valuta Localizzati" },
+                nl: { badge: "Officiële Portal", title: "Kies uw taal", sub: "Selecteer uw voorkeurstaal om verder te gaan met regionale kortingen.", current: "🇳🇱 Nederlands (Standaard)", other1: "🇺🇸 English", other2: "🇩🇪 Deutsch", other3: "🇫🇷 Français", cta: "Doorgaan in het Nederlands »", footer: "🌐 Gelokaliseerde Inhoud & Valuta" },
+                pl: { badge: "Oficjalny Portal", title: "Wybierz swój język", sub: "Wybierz preferowany język, aby przejść do rabatów regionalnych.", current: "🇵🇱 Polski (Domyślny)", other1: "🇺🇸 English", other2: "🇩🇪 Deutsch", other3: "🇪🇸 Español", cta: "Kontynuuj po polsku »", footer: "🌐 Zlokalizowana Zawartość i Waluta" },
+                sv: { badge: "Officiell Portal", title: "Välj ditt språk", sub: "Välj önskat språk för att fortsätta med regionala rabatter.", current: "🇸🇪 Svenska (Standard)", other1: "🇺🇸 English", other2: "🇩🇪 Deutsch", other3: "🇳🇴 Norsk", cta: "Fortsätt på svenska »", footer: "🌐 Lokaliserat Innehåll och Valuta" },
+                no: { badge: "Offisiell Portal", title: "Velg ditt språk", sub: "Vennligst velg foretrukket språk for å fortsette med regionale rabatter.", current: "🇳🇴 Norsk (Standard)", other1: "🇺🇸 English", other2: "🇸🇪 Svenska", other3: "🇩🇰 Dansk", cta: "Fortsett på norsk »", footer: "🌐 Lokalisert Innhold og Valuta" },
+                da: { badge: "Officiel Portal", title: "Vælg Dit Sprog", sub: "Vælg venligst dit foretrukne sprog for at få adgang til rabatter.", current: "🇩🇰 Dansk (Standard)", other1: "🇺🇸 English", other2: "🇩🇪 Deutsch", other3: "🇸🇪 Svenska", cta: "Fortsæt på dansk »", footer: "🌐 Lokaliseret Indhold og Valuta" },
+                fi: { badge: "Virallinen Portaali", title: "Valitse kielesi", sub: "Valitse haluamasi kieli jatkaaksesi alueellisiin alennuksiin.", current: "🇫🇮 Suomi (Oletus)", other1: "🇺🇸 English", other2: "🇸🇪 Svenska", other3: "🇩🇪 Deutsch", cta: "Jatka suomeksi »", footer: "🌐 Lokalisoitu Sisältö ja Valuutta" },
+                ru: { badge: "Официальный портал", title: "Выберите язык", sub: "Выберите предпочитаемый язык для доступа к региональным скидкам.", current: "🇷🇺 Русский (По умолчанию)", other1: "🇺🇸 English", other2: "🇩🇪 Deutsch", other3: "🇪🇸 Español", cta: "Продолжить на русском »", footer: "🌐 Локализованный контент и валюта" },
+                tr: { badge: "Resmi Portal", title: "Dilinizi Seçin", sub: "Bölgesel indirimlerle devam etmek için tercih ettiğiniz dili seçin.", current: "🇹🇷 Türkçe (Varsayılan)", other1: "🇺🇸 English", other2: "🇩🇪 Deutsch", other3: "🇸🇦 العربية", cta: "Türkçe olarak devam et »", footer: "🌐 Yerelleştirilmiş İçerik ve Para Birimi" },
+                ar: { badge: "البوابة الرسمية", title: "اختر لغتك المفضلة", sub: "يرجى اختيار لغتك لمتابعة العروض والخصومات المخصصة لمنطقتك.", current: "🇸🇦 العربية (الافتراضية)", other1: "🇺🇸 English", other2: "🇫🇷 Français", other3: "🇹🇷 Türkçe", cta: "المتابعة باللغة العربية »", footer: "🌐 محتوى وعملة محلية مخصصة" },
+                ja: { badge: "公式ポータル", title: "言語を選択してください", sub: "地域限定の割引を適用するため、希望の言語を選択してください。", current: "🇯🇵 日本語 (デフォルト)", other1: "🇺🇸 English", other2: "🇨🇳 简体中文", other3: "🇰🇷 한국어", cta: "日本語で続ける »", footer: "🌐 地域最適化コンテンツ・通貨対応" },
+                ko: { badge: "공식 포털", title: "언어를 선택하세요", sub: "지역별 할인 혜택을 받으려면 선호하는 언어를 선택하세요.", current: "🇰🇷 한국어 (기본값)", other1: "🇺🇸 English", other2: "🇯🇵 日本語", other3: "🇨🇳 简体中文", cta: "한국어로 계속 진행 »", footer: "🌐 지역 맞춤형 콘텐츠 및 통화" },
+                zh: { badge: "官方门户", title: "请选择语言", sub: "请选择您的首选语言以继续获取区域专属优惠。", current: "🇨🇳 简体中文 (默认)", other1: "🇺🇸 English", other2: "🇯🇵 日本語", other3: "🇰🇷 한국어", cta: "以简体中文继续 »", footer: "🌐 本地化内容与货币结算" },
+                hi: { badge: "आधिकारिक पोर्टल", title: "अपनी भाषा चुनें", sub: "क्षेत्रीय छूट के साथ आगे बढ़ने के लिए कृपया अपनी भाषा चुनें।", current: "🇮🇳 हिन्दी (डिफ़ॉल्ट)", other1: "🇺🇸 English", other2: "🇸🇦 العربية", other3: "🇪🇸 Español", cta: "हिन्दी में जारी रखें »", footer: "🌐 स्थानीय सामग्री और मुद्रा" },
+                id: { badge: "Portal Resmi", title: "Pilih Bahasa Anda", sub: "Silakan pilih bahasa pilihan Anda untuk melanjutkan diskon wilayah.", current: "🇮🇩 Bahasa Indonesia (Default)", other1: "🇺🇸 English", other2: "🇯🇵 日本語", other3: "🇨🇳 简体中文", cta: "Lanjutkan dalam Bahasa Indonesia »", footer: "🌐 Konten & Mata Uang Lokal" }
+            },
             country: {
                 en: { badge: "Region Verification", title: "Select Your Location", sub: "To ensure stock availability and fast local shipping, please confirm your region.", optMain: "🇺🇸 North America (United States)", optMainBadge: "In Stock", optSec: "🌐 Other Continents / International", cta: "Continue to Official Site »", footer: "✓ Official Supply Chain • Fast Shipping" },
                 es: { badge: "Verificación de Región", title: "Seleccione su Ubicación", sub: "Para garantizar la disponibilidad de stock y el envío rápido local, confirme su región.", optMain: "🇪🇸 España / América Latina", optMainBadge: "En Stock", optSec: "🌐 Otros Continentes / Internacional", cta: "Continuar al Sitio Oficial »", footer: "✓ Cadena de Suministro Oficial • Envío Rápido" },
@@ -170,7 +200,7 @@
                 pl: { title: "Bezpieczeństwo i Warunki", sub: "Zaakceptuj protokół odwiedzin, aby uzyskać dostęp do oficjalnych rabatów.", btnAccept: "AKCEPTUJĘ WARUNKI I PRZEJDŹ", footer: "🔒 Bezpieczne Połączenie SSL 256-Bit" },
                 sv: { title: "Säkerhet & Villkor", sub: "Acceptera besöksprotokollet för att få tillgång till officiella rabatter.", btnAccept: "ACCEPTERA VILLKOR & FORTSÄTT", footer: "🛡️ SSL-säkrad 256-bitars Anslutning" },
                 no: { title: "Sikkerhet og Betingelser", sub: "Godta besøksprotokollen for å få tilgang til offisielle rabatter.", btnAccept: "GODTA VILKÅR OG FORTSETT", footer: "🛡️ SSL-sikret 256-biters Tilkobling" },
-                da: { title: "Sikkerhed & Betingelser", sub: "Accepter besøgsprotokollen for at få adgang til officielle rabatter.", btnAccept: "ACCEPTER VILKÅR OG FORTSÆT", footer: "🛡️ SSL-sikret 256-bit Forbindelse" },
+                da: { title: "Sikkerhed & Betingelser", sub: "Accepter besøgsprotokollen for at få adgang til officielle rabatter.", btnAccept: "ACCEPTER VILKÅR OG FORSÆT", footer: "🛡️ SSL-sikret 256-bit Forbindelse" },
                 fi: { title: "Turvallisuus ja Ehdot", sub: "Hyväksy kävijäprotokolla päästäksesi virallisiin alennuksiin.", btnAccept: "HYVÄKSY EHDOT JA JATKA", footer: "🛡️ SSL-suojattu 256-bittinen Yhteys" },
                 ru: { title: "Безопасность и условия", sub: "Примите протокол посетителя для доступа к официальным скидкам.", btnAccept: "ПРИНЯТЬ УСЛОВИЯ И ПРОДОЛЖИТЬ", footer: "🛡️ Защищенное 256-битное SSL-соединение" },
                 tr: { title: "Güvenlik ve Koşullar", sub: "Resmi indirimlere ve stok rezervasyonuna erişmek için koşulları kabul edin.", btnAccept: "KOŞULLARI KABUL ET VE DEVAM ET", footer: "🛡️ 256-Bit SSL Güvenli Bağlantı" },
@@ -187,7 +217,7 @@
                 pt: { title: "Selecione seu Perfil", sub: "Escolha seu perfil para carregar a formulação personalizada e estoque.", btnMale: "👨 MASCULINO / HOMENS", btnFemale: "👩 FEMININO / MULHERES", footer: "✨ Fórmula Sob Medida Disponível" },
                 de: { title: "Wählen Sie Ihr Profil", sub: "Wählen Sie Ihr Geschlecht, um die maßgeschneiderte Formel zu laden.", btnMale: "👨 MÄNNLICH / FÜR MÄNNER", btnFemale: "👩 WEIBLICH / FÜR FRAUEN", footer: "✨ Maßgeschneiderte Formel Verfügbar" },
                 fr: { title: "Sélectionnez votre Profil", sub: "Choisissez votre profil pour charger la formulation personnalisée.", btnMale: "👨 HOMME / POUR HOMMES", btnFemale: "👩 FEMME / POUR FEMMES", footer: "✨ Formule sur mesure disponible" },
-                it: { title: "Seleziona il tuo Profilo", sub: "Scegli il tuo profilo per caricare la formulazione personalizzata.", btnMale: "👨 MASCHIO / PER UOMINI", btnFemale: "👩 FEMMINA / PER DONNE", footer: "✨ Formulazione Personalizzata Disponibile" },
+                it: { title: "Seleziona il tuo Profilo", sub: "Scegli il tuo profilo per caricare la formulazione personalizzata.", btnMale: "👨 MASCHIO / PER UOMINI", btnFemale: "👩 FEMMINA / PER DONNE", footer: "✨ Formulazione Personalizada Disponible" },
                 nl: { title: "Selecteer uw Profiel", sub: "Kies uw profiel om de aangepaste formule te laden.", btnMale: "👨 MANNELIJK / VOOR MANNEN", btnFemale: "👩 VROUWELIJK / VOOR VROUWEN", footer: "✨ Aangepaste Formule Beschikbaar" },
                 pl: { title: "Wybierz Swój Profil", sub: "Wybierz swój profil, aby wczytać spersonalizowaną formułę.", btnMale: "👨 MĘŻCZYZNA / DLA MĘŻCZYZN", btnFemale: "👩 KOBIETA / DLA KOBIET", footer: "✨ Dostępna Spersonalizowana Formuła" },
                 sv: { title: "Välj Din Profil", sub: "Välj din profil för att ladda den anpassade formeln.", btnMale: "👨 MAN / FÖR MÄN", btnFemale: "👩 KVINNA / FÖR KVINNOR", footer: "✨ Anpassad Formel Tillgänglig" },
@@ -208,15 +238,39 @@
         function generateFullHTML() {
             const type = document.getElementById('presellType').value;
             const lang = document.getElementById('presellLang').value;
-            const affLink = document.getElementById('affLink').value;
-            const bgUrl = document.getElementById('bgUrl').value;
+            const affLink = document.getElementById('affLink').value || '#';
+            const bgUrl = document.getElementById('bgUrl').value || 'about:blank';
             const accent = document.getElementById('accentColor').value;
 
             const isRtl = (lang === 'ar') ? 'dir="rtl"' : '';
             let layoutContent = "";
 
-            if (type === 'country') {
-                const t = DATA.country[lang];
+            if (type === 'language') {
+                const t = DATA.language[lang] || DATA.language['en'];
+                layoutContent = `
+                <div class="modal-card layout-lang" ${isRtl}>
+                    <a href="${affLink}" class="close-btn">&times;</a>
+                    <span class="badge">${t.badge}</span>
+                    <h1 class="modal-title">${t.title}</h1>
+                    <p class="modal-subtitle">${t.sub}</p>
+                    
+                    <a href="${affLink}" class="lang-option main-lang">
+                        <span>${t.current}</span>
+                        <span class="active-dot">●</span>
+                    </a>
+                    
+                    <div class="lang-grid">
+                        <a href="${affLink}" class="lang-option-pill">${t.other1}</a>
+                        <a href="${affLink}" class="lang-option-pill">${t.other2}</a>
+                        <a href="${affLink}" class="lang-option-pill">${t.other3}</a>
+                    </div>
+                    
+                    <a href="${affLink}" class="cta-btn">${t.cta}</a>
+                    <div class="footer-text">${t.footer}</div>
+                </div>`;
+            }
+            else if (type === 'country') {
+                const t = DATA.country[lang] || DATA.country['en'];
                 layoutContent = `
                 <div class="modal-card layout-country" ${isRtl}>
                     <a href="${affLink}" class="close-btn">&times;</a>
@@ -235,7 +289,7 @@
                 </div>`;
             } 
             else if (type === 'age') {
-                const t = DATA.age[lang];
+                const t = DATA.age[lang] || DATA.age['en'];
                 layoutContent = `
                 <div class="modal-card layout-age" ${isRtl}>
                     <a href="${affLink}" class="close-btn">&times;</a>
@@ -250,7 +304,7 @@
                 </div>`;
             } 
             else if (type === 'cookies') {
-                const t = DATA.cookies[lang];
+                const t = DATA.cookies[lang] || DATA.cookies['en'];
                 layoutContent = `
                 <div class="modal-card layout-cookies" ${isRtl}>
                     <a href="${affLink}" class="close-btn">&times;</a>
@@ -266,7 +320,7 @@
                 </div>`;
             } 
             else if (type === 'gender') {
-                const t = DATA.gender[lang];
+                const t = DATA.gender[lang] || DATA.gender['en'];
                 layoutContent = `
                 <div class="modal-card layout-gender" ${isRtl}>
                     <a href="${affLink}" class="close-btn">&times;</a>
@@ -299,7 +353,6 @@
         .overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(10, 15, 30, 0.75); z-index:2; }
         .modal-wrapper { position: absolute; top:0; left:0; width:100%; height:100%; z-index:3; display:flex; align-items:center; justify-content:center; padding:20px; }
         
-        /* CARD BASE */
         .modal-card { width:100%; max-width:500px; background:#161b22; border:1px solid #30363d; border-radius:16px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.8); position:relative; padding:32px 28px; }
         .close-btn { position:absolute; top:16px; right:20px; font-size:24px; font-weight:bold; color:#8b949e; text-decoration:none; line-height:1; }
         .close-btn:hover { color:#fff; }
@@ -311,31 +364,33 @@
         .cta-btn { display:block; width:100%; background: ${accent}; color:#fff; text-align:center; padding:16px; font-size:15px; font-weight:700; text-decoration:none; border-radius:10px; text-transform:uppercase; box-shadow: 0 4px 14px ${accent}66; transition: filter 0.2s; }
         .cta-btn:hover { filter: brightness(1.15); }
 
-        /* LAYOUT 1: COUNTRY */
+        .layout-lang .badge { display:inline-block; background: ${accent}22; color: ${accent}; border:1px solid ${accent}66; font-size:11px; font-weight:700; text-transform:uppercase; padding:4px 10px; border-radius:20px; margin-bottom:12px; }
+        .layout-lang .lang-option { background:#21262d; border:2px solid ${accent}; border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:#fff; margin-bottom:12px; font-size:14px; font-weight:700; }
+        .layout-lang .active-dot { color: ${accent}; font-size:18px; }
+        .layout-lang .lang-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-bottom:18px; }
+        .layout-lang .lang-option-pill { background:#0d1117; border:1px solid #30363d; border-radius:8px; padding:10px 4px; text-align:center; text-decoration:none; color:#8b949e; font-size:12px; font-weight:600; transition:all 0.2s; }
+        .layout-lang .lang-option-pill:hover { border-color: ${accent}; color:#fff; }
+
         .layout-country .badge { display:inline-block; background: ${accent}22; color: ${accent}; border:1px solid ${accent}66; font-size:11px; font-weight:700; text-transform:uppercase; padding:4px 10px; border-radius:20px; margin-bottom:12px; }
         .layout-country .country-option { background:#21262d; border:1px solid #30363d; border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:#fff; margin-bottom:12px; font-size:14px; font-weight:600; }
         .layout-country .main-opt { border: 2px solid ${accent}; }
         .layout-country .status-tag { font-size:11px; background: ${accent}; color:#fff; padding:3px 8px; border-radius:6px; font-weight:700; }
 
-        /* LAYOUT 2: AGE */
         .layout-age { text-align: center; border-top: 4px solid ${accent}; }
         .layout-age .warning-icon { font-size: 40px; margin-bottom: 10px; }
         .layout-age .btn-group { display: flex; gap: 10px; margin-top: 10px; }
         .layout-age .btn-no { display:block; width:100%; background:#21262d; color:#8b949e; text-align:center; padding:16px; font-size:13px; font-weight:700; text-decoration:none; border-radius:10px; border:1px solid #30363d; }
 
-        /* LAYOUT 3: COOKIES */
         .layout-cookies { max-width: 550px; background: #0d1117; border: 1px solid ${accent}88; }
         .layout-cookies .cookies-header { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
         .layout-cookies .shield-icon { font-size: 32px; background: ${accent}22; padding: 10px; border-radius: 12px; }
 
-        /* LAYOUT 4: GÊNERO */
         .layout-gender { text-align: center; }
         .layout-gender .gender-grid { display: flex; gap: 12px; margin-bottom: 12px; }
         .layout-gender .gender-card { flex: 1; text-decoration: none; }
         .layout-gender .gender-btn { background: #21262d; border: 2px solid #30363d; padding: 20px 10px; border-radius: 12px; color: #fff; font-size: 14px; font-weight: 700; transition: all 0.2s; }
         .layout-gender .gender-card:hover .gender-btn { border-color: ${accent}; background: ${accent}11; }
 
-        /* SUPORTE PARA IDIOMAS RTL (ÁRABE) */
         *[dir="rtl"] { direction: rtl; text-align: right; }
         *[dir="rtl"] .close-btn { right: auto; left: 20px; }
         *[dir="rtl"] .footer-text, *[dir="rtl"] .layout-age, *[dir="rtl"] .layout-gender { text-align: center; }
@@ -356,30 +411,38 @@
             document.getElementById('outputCode').value = html;
             
             const iframe = document.getElementById('previewFrame');
-            const doc = iframe.contentDocument || iframe.contentWindow.document;
-            doc.open();
-            doc.write(html);
-            doc.close();
+            iframe.srcdoc = html;
         }
 
         function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
+            const tabPreview = document.getElementById('tabPreview');
+            const tabCode = document.getElementById('tabCode');
+            const previewView = document.getElementById('previewView');
+            const codeView = document.getElementById('codeView');
             
             if (tabName === 'preview') {
-                document.querySelectorAll('.tab')[0].classList.add('active');
-                document.getElementById('previewView').classList.add('active');
+                tabPreview.classList.add('active');
+                tabCode.classList.remove('active');
+                previewView.classList.add('active');
+                codeView.classList.remove('active');
             } else {
-                document.querySelectorAll('.tab')[1].classList.add('active');
-                document.getElementById('codeView').classList.add('active');
+                tabCode.classList.add('active');
+                tabPreview.classList.remove('active');
+                codeView.classList.add('active');
+                previewView.classList.remove('active');
             }
         }
 
-        function copyCode() {
+        function copyCode(btnElement) {
             const codeArea = document.getElementById('outputCode');
             codeArea.select();
-            document.execCommand('copy');
-            alert('✅ Código HTML copiado com sucesso!');
+            navigator.clipboard.writeText(codeArea.value);
+            
+            const originalText = btnElement.innerHTML;
+            btnElement.innerHTML = '✓ Copiado!';
+            setTimeout(() => {
+                btnElement.innerHTML = originalText;
+            }, 2000);
         }
 
         window.onload = updateGenerator;
